@@ -56,16 +56,16 @@ elec_data = {
 
     "RF_steer_CAN_ID": 11,
     "RF_drive_CAN_ID": 12,
-    "RF_encoder_DIO": 0,
-    "RB_steer_CAN_ID": 13,
-    "RB_drive_CAN_ID": 14,
-    "RB_encoder_DIO": 1,
-    "LB_steer_CAN_ID": 15,
-    "LB_drive_CAN_ID": 16,
-    "LB_encoder_DIO": 2,
-    "LF_steer_CAN_ID": 17,
-    "LF_drive_CAN_ID": 18,
-    "LF_encoder_DIO": 3,
+    "RF_encoder_DIO": 13,
+    "RB_steer_CAN_ID": 41,
+    "RB_drive_CAN_ID": 42,
+    "RB_encoder_DIO": 43,
+    "LB_steer_CAN_ID": 31,
+    "LB_drive_CAN_ID": 32,
+    "LB_encoder_DIO": 33,
+    "LF_steer_CAN_ID": 21,
+    "LF_drive_CAN_ID": 22,
+    "LF_encoder_DIO": 23,
 }
 ELEC = namedtuple("Data", elec_data.keys())(**elec_data)
 
@@ -91,11 +91,11 @@ op_data = {
     "angular_velocity_limit": 2.5 * (u.rad / u.s),
 
     # For NEO / SparkMAX, use the following and comment out the Falcon500 values
-    # "propulsion_neutral": rev.CANSparkMax.IdleMode.kCoast,
-    # "steering_neutral": rev.CANSparkMax.IdleMode.kBrake,
+    "propulsion_neutral": rev.SparkMax.IdleMode.kCoast,
+    "steering_neutral": rev.SparkMax.IdleMode.kBrake,
     # For Falcon500 / TalonFX, use the following and comment out the NEO values
-    "propulsion_neutral": phoenix5.NeutralMode.Coast,
-    "steering_neutral": phoenix5.NeutralMode.Brake,
+    #"propulsion_neutral": phoenix5.NeutralMode.Coast,
+    #"steering_neutral": phoenix5.NeutralMode.Brake,
 
     # Values to pass to stick.getRawAxis()
     # Set these according to your operator preferences

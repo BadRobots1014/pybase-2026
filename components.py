@@ -10,20 +10,20 @@ all that here instead of in the container.py module.
 from constants import PHYS, MECH, ELEC, OP, SW
 from swervepy.impl import (
     # Replace these classes with the ones that apply to your robot
-    AbsoluteDutyCycleEncoder,
-    Falcon500CoaxialDriveComponent,
-    Falcon500CoaxialAzimuthComponent,
+    AbsoluteCANCoder,
+    NEOCoaxialAzimuthComponent,
+    NEOCoaxialDriveComponent,
     TypicalDriveComponentParameters,
     TypicalAzimuthComponentParameters,
-    Pigeon2Gyro,
+    DummyGyro,
 )
 
 # Define which components you're using (e.g. which motors you're using)
 #
-drive_component_class = Falcon500CoaxialDriveComponent
-azimuth_component_class = Falcon500CoaxialAzimuthComponent
-gyro_component_class = Pigeon2Gyro
-absolute_encoder_class = AbsoluteDutyCycleEncoder
+drive_component_class = NEOCoaxialDriveComponent
+azimuth_component_class = NEOCoaxialAzimuthComponent
+gyro_component_class = DummyGyro
+absolute_encoder_class = AbsoluteCANCoder
 
 # For the drive/azimuth classes selected, set the parameters which DO NOT vary
 # between the modules.  (Look at the Parameters data class for the
