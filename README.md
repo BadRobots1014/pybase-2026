@@ -1,12 +1,8 @@
 # BadRobots 2026
 
----
-
 This is the codebase used for 2026, and the first iteration of the team using `Python` as the primary language.
 
 ## Contributing
-
----
 
 Since it is python, contributing is a lot easier than it used to be. The instructions for Linux and Windows are slightly different so keep that in mind.
 
@@ -111,5 +107,3 @@ robotpy test --isolated
 All commands we need to run and test the code are done through the **robotpy** library. The `--isolated` tag just covers some annoying edge cases that causes problems.
 
 The goal is to make sure all tests are passing. It means the robot *(hopefully)* won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
-
----
