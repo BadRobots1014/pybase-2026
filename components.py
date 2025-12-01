@@ -6,7 +6,6 @@ code takes up space, it can obscure what's going on around it, so we'll do
 all that here instead of in the container.py module.
 """
 
-
 from constants import PHYS, MECH, ELEC, OP, SW
 from swervepy.impl import (
     # Replace these classes with the ones that apply to your robot
@@ -43,7 +42,6 @@ drive_param_values = {
     "continuous_current_limit": ELEC.drive_continuous_current_limit,
     "peak_current_limit": ELEC.drive_peak_current_limit,
     "peak_current_duration": ELEC.drive_peak_current_duration,
-
     "neutral_mode": OP.propulsion_neutral,
     "kP": SW.kP,
     "kI": SW.kI,
@@ -64,7 +62,6 @@ azimuth_param_values = {
     "continuous_current_limit": ELEC.azimuth_continuous_current_limit,
     "peak_current_limit": ELEC.azimuth_peak_current_limit,
     "peak_current_duration": ELEC.azimuth_peak_current_duration,
-
     "neutral_mode": OP.steering_neutral,
     "kP": SW.kP,
     "kI": SW.kI,
