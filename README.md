@@ -2,9 +2,9 @@
 
 This is the codebase used for 2026, and the first iteration of the team using `Python` as the primary language.
 
-## Contributing
+## Getting Started
 
-Since it is python, contributing is a lot easier than it used to be. The instructions for Linux and Windows are slightly different so keep that in mind.
+This guide serves as a strong starting point for learning how to contribute. Since it is python, contributing is a lot easier than it used to be. The instructions for Linux and Windows are slightly different so keep that in mind.
 
 ### A. Download Python
 
@@ -22,6 +22,24 @@ Since it is python, contributing is a lot easier than it used to be. The instruc
 2. Click the green **Code** in the top right.
 3. Click **Open with Github Desktop**
 4. It will open a screen to clone, just click the **Clone** button and it will open
+
+#### Terminal
+
+<details>
+
+For cloning in the terminal you can either use git:
+
+```bash
+git clone git@github.com:BadRobots1014/[REPO_NAME].git
+```
+
+or the Github CLI
+
+```bash
+gh repo clone BadRobots1014/[REPO_NAME]
+```
+
+</details>
 
 ### D. Branching
 
@@ -56,11 +74,12 @@ You will then get a prefix **(venv)** at the start of your terminal to tell you 
 venv\Scripts\activate
 ```
 
-Now you need to install the dependencies to environment so the code will actually work
+Now you need to install the dependencies to this environment so the code will actually work
 
 ```bash
 pip install robotpy[all]
 ```
+
 </details>
 
 #### Linux
@@ -77,28 +96,29 @@ python -m venv venv/
 **Every time** you open VSCode you need to tell it where to find all the dependencies.
 You will then get a prefix **(venv)** at the start of your terminal to tell you it is working.
 
-* bash/zsh:
+- bash/zsh:
 
 ```bash
 venv/bin/activate
 ```
 
-* fish:
+- fish:
 
 ```fish
 venv/bin/activate.fish
 ```
 
-Now you need to install the dependencies to environment so the code will actually work
+Now you need to install the dependencies to the environment so the code will actually work
 
 ```bash
 pip install robotpy[all]
 ```
+
 </details>
 
-### G. Testing Code
+### G. Testing
 
-That's all you need to write code. In order to make sure the robot still works we need to run tests.
+That's all you need to start writing code. In order to make sure the robot still works we need to run tests.
 
 ```bash
 robotpy test --isolated
@@ -106,4 +126,11 @@ robotpy test --isolated
 
 All commands we need to run and test the code are done through the **robotpy** library. The `--isolated` tag just covers some annoying edge cases that causes problems.
 
-The goal is to make sure all tests are passing. It means the robot *(hopefully)* won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
+The goal is to make sure all tests are passing. It means the robot _(hopefully)_ won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
+
+### H. Committing
+
+A commit is a record of change. When you edit the code, you need to record it
+so others know what you did. Github Desktop makes this very easy.
+
+When you make a change to the code, you will see it appear in Github Desktop. It's best [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
