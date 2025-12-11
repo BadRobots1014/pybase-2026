@@ -30,24 +30,42 @@ This guide serves as a strong starting point for learning how to contribute. Sin
 For cloning in the terminal you can either use git:
 
 ```bash
-git clone git@github.com:BadRobots1014/[REPO_NAME].git
+git clone git@github.com:BadRobots1014/pybase-2026.git
 ```
 
 or the Github CLI
 
 ```bash
-gh repo clone BadRobots1014/[REPO_NAME]
+gh repo clone BadRobots1014/pybase-2026
 ```
 
 </details>
 
 ### D. Branching
 
-A codebase has branches, which are (essentially) isolated versions of code that others can work on and see the work being done **without messing up everyone elses work**. With a 10+ people touching the code, we want to avoid disrupting everyones work when possible.
+A codebase has branches, which are (essentially) isolated versions of code that others can work on and see the work being done **without messing up everyone elses work**. With numerous people touching the code, we want to avoid disrupting everyones work when possible.
 
 1. In the top of github desktop you will see **Current Branch**
 2. Click the arrow to the right to open a drop down of the existing branches
 3. If you were told to create a branch, do so here. Otherwise, use the branch you were asked to.
+
+#### Terminal
+
+<details>
+
+If the branch already exists, you simply need to run one command:
+
+```bash
+git switch <branch>
+```
+
+Or if you need to create a new branch:
+
+```bash
+git switch -c <new_branch>
+```
+
+</details>
 
 ### E. Access the code
 
@@ -116,7 +134,31 @@ pip install robotpy[all]
 
 </details>
 
-### G. Testing
+### G. Writing code
+
+As of this moment we don't have a dedicated tutorial or reference. Those will be added at a later date. For now, consult with experienced team members.
+
+### H. Committing
+
+A commit is a record of change. When you edit the code, you need to record it
+so others know what you did. Github Desktop makes this very easy.
+
+When you make a change to the code, you will see it appear in Github Desktop.
+
+#### Terminal
+
+<details>
+If you add a new file, you need to tell git to include it. The easiest way is to tell it to include any new (or deleted) files through `-A`
+
+```bash
+git add -A
+```
+
+Then
+
+</details>
+
+### I. Testing
 
 That's all you need to start writing code. In order to make sure the robot still works we need to run tests.
 
@@ -127,10 +169,3 @@ robotpy test
 All commands we need to run and test the code are done through the **robotpy** library.
 
 The goal is to make sure all tests are passing. It means the robot _(hopefully)_ won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
-
-### H. Committing
-
-A commit is a record of change. When you edit the code, you need to record it
-so others know what you did. Github Desktop makes this very easy.
-
-When you make a change to the code, you will see it appear in Github Desktop. It's best [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary)
