@@ -121,10 +121,10 @@ pip install robotpy[all]
 That's all you need to start writing code. In order to make sure the robot still works we need to run tests.
 
 ```bash
-robotpy test --isolated
+robotpy test
 ```
 
-All commands we need to run and test the code are done through the **robotpy** library. The `--isolated` tag just covers some annoying edge cases that causes problems.
+All commands we need to run and test the code are done through the **robotpy** library.
 
 The goal is to make sure all tests are passing. It means the robot _(hopefully)_ won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
 
