@@ -136,9 +136,19 @@ pip install robotpy[all]
 
 ### G. Writing code
 
-As of this moment we don't have a dedicated tutorial or reference. Those will be added at a later date. For now, consult with experienced team members.
+As of this moment we don't have a dedicated tutorial or reference. Those will be added at a later date. For now, consult with experienced team members and mentors.
 
-### H. Committing
+### H. Testing
+
+Once you have written some code, we want to make sure the code does what we expect it to. This is where tests come in. What we are looking for in tests is **unintended**, silent, erorrs that your code editor might not catch.
+
+```bash
+robotpy test
+```
+
+If the command outputs all green for the tests, you are all set and have nothing to worry about. If you get red F for any of the tests, try your best to solve it. If you can't figure out how to fix it, then speak with an experienced member and/or mentor.
+
+### I. Committing
 
 A commit is a record of change. When you edit the code, you need to record it
 so others know what you did. Github Desktop makes this very easy.
@@ -176,15 +186,3 @@ git commit -am "[title]"
 `-a` tells git that for all files, use the title passed after `-m`. It gets combined into -am for convience. If you feel you need to add a description, don't include `m`.
 
 </details>
-
-### I. Testing
-
-That's all you need to start writing code. In order to make sure the robot still works we need to run tests.
-
-```bash
-robotpy test
-```
-
-All commands we need to run and test the code are done through the **robotpy** library.
-
-The goal is to make sure all tests are passing. It means the robot _(hopefully)_ won't die in the middle of a match, assuming the team remembers to write proper test. If you need help getting them to pass, speak with one of the experienced members.
