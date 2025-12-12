@@ -147,17 +147,15 @@ When you make a changes to the code, you will see them appear in Github Desktop.
 
 **The most important part** of a commit is the title. It is what shows up next to your commit to tell others what you did. In a perfect world we would use [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), but with how rapidly we change the code it's too restrictive. So instead there are four rules we focus on:
 
-1. **Commits are present tense actions**. It's a practice that comes from git itself. To be consistent with standard practices, we will do the same.
-   e.g. "make xyzzy do frotz" instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy to do frotz".
+1. **Commits are present tense actions**. It's a practice that comes from git itself. To be consistent with standard practices, we will do the same. e.g. "make xyzzy do frotz" instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy to do frotz".
 
-2. **Use Descriptive titles**. Often times we don't have time to look through every single commit to see what changed, so we need to be able to glance through the titles to get an idea of what changed.
-   e.g. "Create README.md", "Change shooting angle from degrees to radians", "Update drivetrain speed limit", "Fix IdealStartingState arguments".
+2. **Use Descriptive titles**. Often times we don't have time to look through every single commit to see what changed, so we need to be able to glance through the titles to get an idea of what changed. e.g. "Create README.md", "Change shooting angle from degrees to radians", "Update drivetrain speed limit", "Fix IdealStartingState arguments".
 
 3. **Keep titles short**. A paragraph as a title is incredibly difficult to read. It is possible to be detailed and concise in a sentence. If you feel more detail is needed, add it to the description.
 
-4. **Commit Often**. This just comes down to experience. I recommend you do so after you make a change to anything. Update a function? Commit. Update constants? Commit. **It's better to write to many commits than to few**. It makes looking back at your changes a lot easier. Trust me on this one.
+4. **Commit Often**. This just comes down to experience. I recommend you do so after you make a change to anything. Update a function? Commit. Update constants? Commit.
 
-Once you have the title and you want to record it, just click the commit button in the bottom left.
+Once you have the title and you want to record it, just click the commit button in the bottom left. **It's better to write to many commits than to few**. It makes looking back at your changes a lot easier. Trust me on this one.
 
 #### Terminal
 
