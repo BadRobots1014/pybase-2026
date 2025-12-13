@@ -4,7 +4,7 @@ This is the codebase used for 2026, and the first iteration of the team using `P
 
 ## Getting Started
 
-This guide serves as a strong starting point for learning how to contribute. Since it is python, contributing is a lot easier than it used to be. The instructions for Linux and Windows are slightly different so keep that in mind.
+This guide serves as a starting point for contributing to the robot code. Since we are using Python, the barrier to entry is lower than in previous years. Please note that setup instructions differ slightly between Linux and Windows.
 
 ### A. Download Python
 
@@ -21,19 +21,19 @@ This guide serves as a strong starting point for learning how to contribute. Sin
 1. For most it is recommended to use **Github Desktop**. If you don't have it installed, https://desktop.github.com/download/
 2. Click the green **Code** in the top right.
 3. Click **Open with Github Desktop**
-4. It will open a screen to clone, just click the **Clone** button and it will open
+4. A prompt will appear in the app, simply click the Clone button.
 
 #### Terminal
 
 <details>
 
-For cloning in the terminal you can either use git:
+To clone via the terminal, you can use git:
 
 ```bash
 git clone git@github.com:BadRobots1014/pybase-2026.git
 ```
 
-or the Github CLI
+Or the GitHub CLI:
 
 ```bash
 gh repo clone BadRobots1014/pybase-2026
@@ -46,20 +46,20 @@ gh repo clone BadRobots1014/pybase-2026
 A codebase has branches, which are (essentially) isolated versions of code that others can work on and see the work being done **without messing up everyone elses work**. With numerous people touching the code, we want to avoid disrupting everyones work when possible.
 
 1. In the top of github desktop you will see **Current Branch**
-2. Click the arrow to the right to open a drop down of the existing branches
-3. If you were told to create a branch, do so here. Otherwise, use the branch you were asked to.
+2. Click the arrow to the right to open a dropdown of the existing branches
+3. If you were assigned a specific branch, select it here. If you were told to create a new one, you can do so from this menu.
 
 #### Terminal
 
 <details>
 
-If the branch already exists, you simply need to run one command:
+If the branch already exists, run:
 
 ```bash
 git switch <branch>
 ```
 
-Or if you need to create a new branch:
+If you need to create a new branch:
 
 ```bash
 git switch -c <new_branch>
@@ -69,30 +69,29 @@ git switch -c <new_branch>
 
 ### E. Access the code
 
-From Github Desktop, in the top left there will be a tab that says **File** with a dropdown that says **Open in Code**
+From GitHub Desktop, navigate to the Repository menu in the top left (or the button in the main view) and select **Open in Visual Studio Code**.
 
 ### F. Install Dependencies
 
-You can run all of these commands in the terminal provided in VSCode to make things most convenient.
+For the code to function, we need to install specific libraries. It is best practice to create a **virtual environment** (venv) to isolate these dependencies. You can run the following commands in the VS Code terminal.
 
 #### Windows
 
 <details>
 
-The code requires dependencies in order to function. The best way is to create a virtual environment for these to live in.
+1. Create the virtual environment:
 
 ```bash
 py -3.13 -m venv venv/
 ```
 
-**Every time** you open VSCode you need to tell it where to find all the dependencies.
-You will then get a prefix **(venv)** at the start of your terminal to tell you it is working.
+2. Activate the environment. You **must do this every time** you open VS Code. You will see a (venv) prefix in your terminal when it is active.
 
 ```bash
 venv\Scripts\activate
 ```
 
-Now you need to install the dependencies to this environment so the code will actually work
+3. Install the required robot libraries:
 
 ```bash
 pip install robotpy[all]
@@ -104,15 +103,13 @@ pip install robotpy[all]
 
 <details>
 
-The code requires dependencies in order to function. The best way is to create a virtual environment for these to live in.
-For anyone experienced,
+Create the virtual environment:
 
 ```bash
 python -m venv venv/
 ```
 
-**Every time** you open VSCode you need to tell it where to find all the dependencies.
-You will then get a prefix **(venv)** at the start of your terminal to tell you it is working.
+2. Activate the environment. You **must do this every time** you open VS Code. You will see a (venv) prefix in your terminal when it is active.
 
 - bash/zsh:
 
@@ -126,7 +123,7 @@ venv/bin/activate
 venv/bin/activate.fish
 ```
 
-Now you need to install the dependencies to the environment so the code will actually work
+Install the required robot libraries:
 
 ```bash
 pip install robotpy[all]
@@ -140,49 +137,52 @@ As of this moment we don't have a dedicated tutorial or reference. Those will be
 
 ### H. Testing
 
-Once you have written some code, we want to make sure the code does what we expect it to. This is where tests come in. What we are looking for in tests is **unintended**, silent, erorrs that your code editor might not catch.
+Once you have written code, we must ensure it behaves as expected. Tests help identify **unintended, silent errors** that your code editor might not catch.
 
 ```bash
 robotpy test
 ```
 
-If the command outputs all green for the tests, you are all set and have nothing to worry about. If you get red F for any of the tests, try your best to solve it. If you can't figure out how to fix it, then speak with an experienced member and/or mentor.
+- All Green: You are all set!
+- Red 'F': A test failed. Try your best to solve it. If you cannot figure it out, speak with an experienced member or mentor.
 
 ### I. Committing
 
-A commit is a record of change. When you edit the code, you need to record it
-so others know what you did. Github Desktop makes this very easy.
+A commit is a record of a change. When you edit code, you must record it so others know what you did.
 
-When you make a changes to the code, you will see them appear in Github Desktop. **Green** text means you added something, **red** text means you deleted something.
+When you make changes, they will appear in GitHub Desktop. **Green** text indicates additions, while **red** text indicates deletions.
 
-**The most important part** of a commit is the title. It is what shows up next to your commit to tell others what you did. In a perfect world we would use [Convential Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), but with how rapidly we change the code it's too restrictive. So instead there are four rules we focus on:
+The most important part of a commit is the title. In a perfect world, we would use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary), but given our rapid pace, we focus on four simple rules:
 
-1. **Commits are present tense actions**. It's a practice that comes from git itself. To be consistent with standard practices, we will do the same. e.g. "make xyzzy do frotz" instead of "[This patch] makes xyzzy do frotz" or "[I] changed xyzzy to do frotz".
+1. **Use Present Tense Actions**: Follow the standard git practice.
+   - Good: "make xyzzy do frotz"
+   - Bad: "I changed xyzzy to do frotz" or "Made xyzzy do frotz"
 
-2. **Use Descriptive titles**. Often times we don't have time to look through every single commit to see what changed, so we need to be able to glance through the titles to get an idea of what changed. e.g. "Create README.md", "Change shooting angle from degrees to radians", "Update drivetrain speed limit", "Fix IdealStartingState arguments".
+2. **Use Descriptive Titles**: We need to understand the change at a glance.
+   - Examples: "Create README.md", "Change shooting angle from degrees to radians", "Fix IdealStartingState arguments".
 
-3. **Keep titles short**. A paragraph as a title is incredibly difficult to read. It is possible to be detailed and concise in a sentence. If you feel more detail is needed, add it to the description.
+3. **Keep Titles Short**: Do not write a paragraph in the title. If you need more detail, add it to the description field.
 
-4. **Commit Often**. This just comes down to experience. I recommend you do so after you make a change to anything. Update a function? Commit. Update constants? Commit.
+4. **Commit Often**. This just comes down to experience. I recommend you do so after you make a change to anything (e.g. updating a function, changing constants).
 
-Once you have the title and you want to record it, just click the commit button in the bottom left. **It's better to write to many commits than to few**. It makes looking back at your changes a lot easier. Trust me on this one.
+Once you have written your title, click the Commit button in the bottom left. It is **better to write too many commits than too few**. It makes tracking changes significantly easier.
 
 #### Terminal
 
 <details>
 
-If you create or delete a file, you need to tell git to include it. The easiest way is to tell it to include all new / old files in the codebase through `-A`. This is referred to as **staging** changes (preparing them to be recorded).
+1. Stage your changes. This tells git to include all new, modified, or deleted files in the next commit.
 
 ```bash
 git add -A
 ```
 
-Then you have to **commit** those changes. For simplicity sake we will just add a title to the the commit.
+2. Commit the changes.
 
 ```bash
-git commit -am "[title]"
+git commit -m "[title]"
 ```
 
-`-a` tells git that for all files, use the title passed after `-m`. It gets combined into -am for convience. If you feel you need to add a description, don't include `m`.
+_Note: If you have modified existing files but haven't created new ones, you can combine these steps using `git commit -am "[title]"`, but `git add -A` is safer for beginners._
 
 </details>
