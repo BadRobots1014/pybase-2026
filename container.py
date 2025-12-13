@@ -1,22 +1,21 @@
-import math
 import logging
-
-logger = logging.getLogger("your.robot")
+import math
 
 import wpilib
-from wpimath.geometry import Translation2d, Rotation2d, Pose2d
 from pathplannerlib.path import (
-    PathPlannerPath,
-    PathConstraints,
-    IdealStartingState,
     GoalEndState,
+    IdealStartingState,
+    PathConstraints,
+    PathPlannerPath,
 )
+from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 
-from swervepy import u, SwerveDrive, TrajectoryFollowerParameters
+import components
+from constants import ELEC, MECH, OP, PHYS, SW
+from swervepy import SwerveDrive, TrajectoryFollowerParameters, u
 from swervepy.impl import CoaxialSwerveModule
 
-from constants import PHYS, MECH, ELEC, OP, SW
-import components
+logger = logging.getLogger("your.robot")
 
 
 class RobotContainer:
@@ -200,6 +199,7 @@ class RobotContainer:
                 Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90)),
             ]
         )
+
         path = PathPlannerPath(
             waypoints=bezier_points,
             constraints=PathConstraints(3.0, 3.0, 2 * math.pi, 4 * math.pi),
