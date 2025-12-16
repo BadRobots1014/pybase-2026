@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from pyfrc.physics import core
 
-from swervepy.impl import CoaxialSwerveModule
+from swervepy.impl import CoaxialSwerveModule, DummyGyro
 from swervepy.impl.motor import DummyCoaxialAzimuthComponent, DummyCoaxialDriveComponent
 
 # explicit importing causes errors, only needed for type checking
@@ -24,6 +24,8 @@ class PhysicsEngine(core.PhysicsEngine):
             )
             for module in self.swerve._modules
         )
+
+        self.swerve._gyro = DummyGyro()
 
         return
 
