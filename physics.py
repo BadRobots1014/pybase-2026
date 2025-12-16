@@ -31,5 +31,4 @@ class PhysicsEngine(core.PhysicsEngine):
         # Update swerve states
         self.swerve.simulationPeriodic()
         self.swerve.periodic()
-        # self.physics_controller.drive(speeds, tm_diff)
         return
