@@ -114,13 +114,13 @@ python -m venv venv/
 - bash/zsh:
 
 ```bash
-venv/bin/activate
+source venv/bin/activate
 ```
 
 - fish:
 
 ```fish
-venv/bin/activate.fish
+source venv/bin/activate.fish
 ```
 
 Install the required robot libraries:
