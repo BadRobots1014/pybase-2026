@@ -1,4 +1,5 @@
 from typing import Optional
+import wpilib
 
 import commands2
 
@@ -15,6 +16,11 @@ class Robot(commands2.TimedCommandRobot):
         self.container = RobotContainer()
         self.scheduler = commands2.CommandScheduler.getInstance()
         self.autonomous_command: Optional[commands2.Command] = None
+
+    # Runs every cycle no matter the state
+    def robotPeriodic(self):
+        match_time = wpilib.DriverStation.getMatchTime()
+        wpilib.SmartDashboard.putNumber("Match Info/Match Time", match_time)
 
     # Schedule Auto command when switched to "Auto"
     def autonomousInit(self) -> None:
