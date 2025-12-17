@@ -13,7 +13,7 @@ from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 
 import components
 from constants import ELEC, MECH, OP, PHYS, SW
-from swervepy import SwerveDrive, TrajectoryFollowerParameters, u
+from swervepy import SwerveDrive
 from swervepy.impl import CoaxialSwerveModule
 
 logger = logging.getLogger("your.robot")
@@ -21,10 +21,8 @@ logger = logging.getLogger("your.robot")
 
 class RobotContainer:
     """
-    This example robot container should serve as a demonstration for how to
-    implement swervepy on your robot.  You should not need to edit much of the
-    code in this module to get a test working.  Instead, edit the values and
-    class choices in constants.py.
+    RobotContainer contains all the subsystems and components needed for the robot to work, allowing them to be referenced
+    by other systems.
     """
 
     def __init__(self):

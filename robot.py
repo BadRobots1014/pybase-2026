@@ -5,15 +5,18 @@ import commands2
 from container import RobotContainer
 
 
-# The entry point to the code. Everything inits off these states
 class Robot(commands2.TimedCommandRobot):
+    """
+    Robot class is the entry-point of the code, handling initialization and scheduling of commands.
+    """
+
     # Runs no matter the state
     def robotInit(self):
         self.container = RobotContainer()
         self.scheduler = commands2.CommandScheduler.getInstance()
         self.autonomous_command: Optional[commands2.Command] = None
 
-    # Auto Period
+    # Schedule Auto command when switched to "Auto"
     def autonomousInit(self) -> None:
         self.autonomous_command = self.container.get_autonomous_command()
         if self.autonomous_command:
@@ -23,7 +26,7 @@ class Robot(commands2.TimedCommandRobot):
     def autonomousPeriodic(self) -> None:
         return
 
-    # Manual driving
+    # When no command is scheduled, Teleop command is scheduled automatically
     def teleopInit(self) -> None:
         if self.autonomous_command:
             self.autonomous_command.cancel()
