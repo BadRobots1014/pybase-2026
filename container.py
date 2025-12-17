@@ -121,7 +121,6 @@ class RobotContainer:
 
         # Define a swerve drive subsystem by passing in a list of SwerveModules
         # and some options
-        #
         self.swerve = SwerveDrive(
             modules,
             gyro,
@@ -130,9 +129,25 @@ class RobotContainer:
             SW.auto_follower_params,
         )
 
+        # Cache Auto path to reduce calculations in match
+        bezier_points = PathPlannerPath.waypointsFromPoses(
+            [
+                Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
+                Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
+                Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90)),
+            ]
+        )
+        self.autoPeriodPath = PathPlannerPath(
+            waypoints=bezier_points,
+            constraints=PathConstraints(3.0, 3.0, 2 * math.pi, 4 * math.pi),
+            ideal_starting_state=IdealStartingState(0.0, Rotation2d.fromDegrees(0)),
+            goal_end_state=GoalEndState(
+                0.0, Rotation2d.fromDegrees(-90)
+            ),  # Zero velocity and facing 90 degrees clockwise
+        )
+
         # Set the swerve subsystem's default command to teleoperate using
         # the controller joysticks
-        #
         self.swerve.setDefaultCommand(
             self.swerve.teleop_command(
                 translation=self.get_translation_input,
@@ -192,21 +207,4 @@ class RobotContainer:
         )
 
     def get_autonomous_command(self):
-        bezier_points = PathPlannerPath.waypointsFromPoses(
-            [
-                Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-                Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-                Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90)),
-            ]
-        )
-
-        path = PathPlannerPath(
-            waypoints=bezier_points,
-            constraints=PathConstraints(3.0, 3.0, 2 * math.pi, 4 * math.pi),
-            ideal_starting_state=IdealStartingState(0.0, Rotation2d.fromDegrees(0)),
-            goal_end_state=GoalEndState(
-                0.0, Rotation2d.fromDegrees(-90)
-            ),  # Zero velocity and facing 90 degrees clockwise
-        )
-
-        return AutoBuilder.followPath(path)
+        return AutoBuilder.followPath(self.autoPeriodPath)
