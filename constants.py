@@ -14,8 +14,10 @@ This file defines constants related to your robot.  These constants include:
 
 import math
 from collections import namedtuple
-import rev
+
 import phoenix5
+import rev
+
 from swervepy import u
 
 # Physical constants
@@ -103,7 +105,7 @@ sw_data = {
     # field_relative: True if "forward" means "down the field"; False if
     # "forward" means "in the direction the robot is facing".  A True value
     # requires a (non-Dummy) gyro.
-    "field_relative": False,
+    "field_relative": True,
     # drive_open_loop: True if we're not using PID control *for velocity targeting*,
     # i.e. when a target velocity is calculated, do we use the corresponding
     # CoaxialDriveComponent's follow_velocity_open() method (set motor output
