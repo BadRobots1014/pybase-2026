@@ -30,6 +30,4 @@ class PhysicsEngine(core.PhysicsEngine):
         return
 
     def update_sim(self, now, tm_diff):
-        # Update swerve states
-        self.swerve.simulationPeriodic()
         return

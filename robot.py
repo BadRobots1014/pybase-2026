@@ -21,7 +21,7 @@ class Robot(commands2.TimedCommandRobot):
 
     # Runs every cycle while the robot is in "Auto"
     def autonomousPeriodic(self) -> None:
-        self.container.swerve.periodic()
+        return
 
     # Manual driving
     def teleopInit(self) -> None:
@@ -30,4 +30,4 @@ class Robot(commands2.TimedCommandRobot):
 
     # Runs every cycle while the robot is in "Teleop"
     def teleopPeriodic(self) -> None:
-        self.container.swerve.periodic()
+        return

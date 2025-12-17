@@ -209,7 +209,4 @@ class RobotContainer:
             ),  # Zero velocity and facing 90 degrees clockwise
         )
 
-        first_path = True  # reset robot pose to initial pose in trajectory
-        open_loop = True  # don't use built-in motor feedback for velocity
-
         return AutoBuilder.followPath(path)
