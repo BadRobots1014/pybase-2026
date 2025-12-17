@@ -4,31 +4,31 @@ import math
 import time
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import Callable, Optional, TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Callable, Iterable, Optional
 
 import commands2
-from pathplannerlib.auto import AutoBuilder
-from pathplannerlib.path import PathPlannerPath
-from pathplannerlib.commands import FollowPathCommand
-from pathplannerlib.controller import PPHolonomicDriveController
-from pathplannerlib.config import PIDConstants, RobotConfig
 import wpilib
 import wpilib.sysid
 import wpimath.estimator
 import wpimath.kinematics
+from commands2.sysid import SysIdRoutine
+from pathplannerlib.auto import AutoBuilder
+from pathplannerlib.commands import FollowPathCommand
+from pathplannerlib.config import PIDConstants, RobotConfig
+from pathplannerlib.controller import PPHolonomicDriveController
+from pathplannerlib.path import PathPlannerPath
 from pint import Quantity
 from typing_extensions import deprecated
-from wpimath.geometry import Pose2d, Translation2d, Rotation2d
-from wpimath.kinematics import ChassisSpeeds, SwerveModuleState, SwerveModulePosition
+from wpimath.geometry import Pose2d, Rotation2d, Translation2d
+from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
 from wpiutil import SendableBuilder
-from commands2.sysid import SysIdRoutine
 
 if TYPE_CHECKING:
     from wpimath.estimator import SwerveDrive4PoseEstimator
     from wpimath.kinematics import SwerveDrive4Kinematics
 
 from swervepy import u
-from swervepy.abstract import SwerveModule, Gyro
+from swervepy.abstract import Gyro, SwerveModule
 
 
 class SwerveDrive(commands2.Subsystem):
@@ -103,7 +103,9 @@ class SwerveDrive(commands2.Subsystem):
                 lambda: self.pose,
                 self.reset_odometry,
                 lambda: self.robot_relative_speeds,
-                lambda speeds, feedforwards: self.drive(speeds, path_following_params.drive_open_loop),
+                lambda speeds, feedforwards: self.drive(
+                    speeds, path_following_params.drive_open_loop
+                ),
                 PPHolonomicDriveController(
                     PIDConstants(path_following_params.xy_kP),
                     PIDConstants(path_following_params.theta_kP),
@@ -128,7 +130,9 @@ class SwerveDrive(commands2.Subsystem):
         vision_pose = self._vision_pose_callback()
         # TODO: Add ability to specify custom timestamp
         if vision_pose:
-            self._odometry.addVisionMeasurement(vision_pose, wpilib.Timer.getFPGATimestamp())
+            self._odometry.addVisionMeasurement(
+                vision_pose, wpilib.Timer.getFPGATimestamp()
+            )
 
         robot_pose = self._odometry.update(self._gyro.heading, self.module_positions)
 
@@ -167,14 +171,18 @@ class SwerveDrive(commands2.Subsystem):
         """
 
         speeds = (
-            ChassisSpeeds.fromFieldRelativeSpeeds(translation.x, translation.y, rotation, self._gyro.heading)
+            ChassisSpeeds.fromFieldRelativeSpeeds(
+                translation.x, translation.y, rotation, self._gyro.heading
+            )
             if field_relative
             else ChassisSpeeds(translation.x, translation.y, rotation)
         )
         speeds = ChassisSpeeds.discretize(speeds, self.period_seconds)
         swerve_module_states = self._kinematics.toSwerveModuleStates(speeds)
 
-        self.desire_module_states(swerve_module_states, drive_open_loop, rotate_in_place=False)
+        self.desire_module_states(
+            swerve_module_states, drive_open_loop, rotate_in_place=False
+        )
 
     @drive.register
     def _(self, chassis_speeds: ChassisSpeeds, drive_open_loop: bool):
@@ -205,11 +213,15 @@ class SwerveDrive(commands2.Subsystem):
         :param rotate_in_place: Should the modules rotate while not driving
         """
 
-        swerve_module_states = self._kinematics.desaturateWheelSpeeds(states, self.max_velocity)  # type: ignore
+        swerve_module_states = self._kinematics.desaturateWheelSpeeds(
+            states, self.max_velocity
+        )  # type: ignore
 
         for i in range(len(self._modules)):
             module: SwerveModule = self._modules[i]
-            module.desire_state(swerve_module_states[i], drive_open_loop, rotate_in_place)
+            module.desire_state(
+                swerve_module_states[i], drive_open_loop, rotate_in_place
+            )
 
     @property
     def module_states(self) -> tuple[SwerveModuleState, ...]:
@@ -279,7 +291,11 @@ class SwerveDrive(commands2.Subsystem):
             # Drive motors at desired voltage
             module.set_drive_voltage(volts)
 
-    def _sysid_log(self, log: wpilib.sysid.SysIdRoutineLog, module_names: Optional[tuple[str, ...]] = None):
+    def _sysid_log(
+        self,
+        log: wpilib.sysid.SysIdRoutineLog,
+        module_names: Optional[tuple[str, ...]] = None,
+    ):
         """
         Log motor information for SysId
 
@@ -320,9 +336,13 @@ class SwerveDrive(commands2.Subsystem):
         :param drive_open_loop: Use open loop (True) or closed loop (False) velocity control for driving the wheel
         :return: The command
         """
-        return _TeleOpCommand(self, translation, strafe, rotation, field_relative, drive_open_loop)
+        return _TeleOpCommand(
+            self, translation, strafe, rotation, field_relative, drive_open_loop
+        )
 
-    @deprecated("SwervePy automatically configures PathPlanner AutoBuilder. Use native PathPlanner functions instead.")
+    @deprecated(
+        "SwervePy automatically configures PathPlanner AutoBuilder. Use native PathPlanner functions instead."
+    )
     def follow_trajectory_command(
         self,
         path: PathPlannerPath,
@@ -344,7 +364,9 @@ class SwerveDrive(commands2.Subsystem):
         # TODO: Re-impl trajectory visualisation on Field2d
 
         # Find the drive base radius (the distance from the center of the robot to the furthest module)
-        radius = greatest_distance_from_translations([module.placement for module in self._modules])
+        radius = greatest_distance_from_translations(
+            [module.placement for module in self._modules]
+        )
 
         # Position feedback controller for following waypoints
         controller = PPHolonomicDriveController(
@@ -357,7 +379,9 @@ class SwerveDrive(commands2.Subsystem):
             path,
             lambda: self.pose,
             lambda: self.robot_relative_speeds,
-            lambda speeds, feedforwards: self.drive(speeds, drive_open_loop=parameters.drive_open_loop),
+            lambda speeds, feedforwards: self.drive(
+                speeds, drive_open_loop=parameters.drive_open_loop
+            ),
             controller,
             RobotConfig.fromGUISettings(),
             flip_path,
@@ -368,11 +392,15 @@ class SwerveDrive(commands2.Subsystem):
         if first_path:
             initial_pose = path.getStartingHolonomicPose()
             if initial_pose is not None:
-                command = command.beforeStarting(commands2.InstantCommand(lambda: self.reset_odometry(initial_pose)))
+                command = command.beforeStarting(
+                    commands2.InstantCommand(lambda: self.reset_odometry(initial_pose))
+                )
 
         return command
 
-    def sys_id_quasistatic(self, direction: SysIdRoutine.Direction) -> commands2.Command:
+    def sys_id_quasistatic(
+        self, direction: SysIdRoutine.Direction
+    ) -> commands2.Command:
         """
         Run a quasistatic characterization test. The robot will move until this command is cancelled.
 
@@ -418,7 +446,8 @@ class _TeleOpCommand(commands2.Command):
 
     def execute(self):
         self._swerve.drive(
-            Translation2d(self.translation(), self.strafe()) * self._swerve.max_velocity,
+            Translation2d(self.translation(), self.strafe())
+            * self._swerve.max_velocity,
             self.rotation() * self._swerve.max_angular_velocity,
             self.field_relative,
             self.open_loop,
@@ -426,10 +455,14 @@ class _TeleOpCommand(commands2.Command):
 
     def initSendable(self, builder: SendableBuilder):
         builder.addBooleanProperty(
-            "Field Relative", lambda: self.field_relative, lambda val: setattr(self, "field_relative", val)
+            "Field Relative",
+            lambda: self.field_relative,
+            lambda val: setattr(self, "field_relative", val),
         )
         builder.addBooleanProperty(
-            "Open Loop", lambda: self.open_loop, lambda val: setattr(self, "drive_open_loop", val)
+            "Open Loop",
+            lambda: self.open_loop,
+            lambda val: setattr(self, "drive_open_loop", val),
         )
 
     def toggle_field_relative(self):

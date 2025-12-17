@@ -18,7 +18,7 @@ from collections import namedtuple
 import phoenix5
 import rev
 
-from swervepy import u
+from swervepy import TrajectoryFollowerParameters, u
 
 # Physical constants
 phys_data = {
@@ -112,8 +112,14 @@ sw_data = {
     # proportionally based on target and max velocities) or
     # follow_velocity_closed() method (put motor in PID control mode and set
     # target velocity).
-    #
     "drive_open_loop": True,
+    # auto_follower_params: Auto Trajectory Defaults
+    "auto_follower_params": TrajectoryFollowerParameters(
+        # max_drive_velocity=4.5 * (u.m / u.s),
+        theta_kP=1,
+        xy_kP=1,
+        drive_open_loop=False,
+    ),
     # Constants for PID control of the propulsion AND steering motors
     # (kP must be non-zero, or azimuth motors won't engage.)
     "kP": 0.3,  # representative value for Falcon500 motors

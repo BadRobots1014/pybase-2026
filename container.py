@@ -2,6 +2,7 @@ import logging
 import math
 
 import wpilib
+from pathplannerlib.auto import AutoBuilder
 from pathplannerlib.path import (
     GoalEndState,
     IdealStartingState,
@@ -121,7 +122,13 @@ class RobotContainer:
         # Define a swerve drive subsystem by passing in a list of SwerveModules
         # and some options
         #
-        self.swerve = SwerveDrive(modules, gyro, OP.max_speed, OP.max_angular_velocity)
+        self.swerve = SwerveDrive(
+            modules,
+            gyro,
+            OP.max_speed,
+            OP.max_angular_velocity,
+            SW.auto_follower_params,
+        )
 
         # Set the swerve subsystem's default command to teleoperate using
         # the controller joysticks
@@ -185,13 +192,6 @@ class RobotContainer:
         )
 
     def get_autonomous_command(self):
-        follower_params = TrajectoryFollowerParameters(
-            # max_drive_velocity=4.5 * (u.m / u.s),
-            theta_kP=1,
-            xy_kP=1,
-            drive_open_loop=False,
-        )
-
         bezier_points = PathPlannerPath.waypointsFromPoses(
             [
                 Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
@@ -211,4 +211,5 @@ class RobotContainer:
 
         first_path = True  # reset robot pose to initial pose in trajectory
         open_loop = True  # don't use built-in motor feedback for velocity
-        return
+
+        return AutoBuilder.followPath(path)
