@@ -205,4 +205,6 @@ class RobotContainer:
         )
 
     def get_autonomous_command(self):
-        return AutoBuilder.followPath(self.autoPeriodPath)
+        return AutoBuilder.pathfindThenFollowPath(
+            self.autoPeriodPath, SW.auto_path_constraints
+        )

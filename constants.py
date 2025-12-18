@@ -17,6 +17,7 @@ from collections import namedtuple
 
 import phoenix5
 import rev
+from pathplannerlib.path import PathConstraints
 
 from swervepy import TrajectoryFollowerParameters, u
 
@@ -119,6 +120,13 @@ sw_data = {
         theta_kP=1,
         xy_kP=1,
         drive_open_loop=False,
+    ),
+    # auto_path_constraints: Auto pathing physical constraints so robot doesn't destroy itself
+    "auto_path_constraints": PathConstraints(
+        4.5,
+        4.5,
+        11.5,
+        11.5,
     ),
     # Constants for PID control of the propulsion AND steering motors
     # (kP must be non-zero, or azimuth motors won't engage.)
