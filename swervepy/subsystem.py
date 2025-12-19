@@ -22,7 +22,7 @@ from pint import Quantity
 from typing_extensions import deprecated
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
-from wpiutil import SendableBuilder
+from wpiutil import Sendable, SendableBuilder
 
 if TYPE_CHECKING:
     from wpimath.estimator import SwerveDrive4PoseEstimator
@@ -129,6 +129,9 @@ class SwerveDrive(commands2.Subsystem):
             SysIdRoutine.Config(),
             SysIdRoutine.Mechanism(self._sysid_drive, self._sysid_log, self, "drive"),
         )
+
+        self.swerve_telemetry = SwerveSendable(self)
+        wpilib.SmartDashboard.putData("Swerve/Swerve Modules", self.swerve_telemetry)
 
     def periodic(self):
         vision_pose = self._vision_pose_callback()
@@ -475,6 +478,36 @@ class _TeleOpCommand(commands2.Command):
     def toggle_open_loop(self):
         self.open_loop = not self.open_loop
 
+
+class SwerveSendable(Sendable):
+    def __init__(self, drivetrain):
+        super().__init__()
+        self.drivetrain = drivetrain
+        self.names = ["Front Left", "Front Right", "Back Left", "Back Right"]
+
+    def initSendable(self, builder: SendableBuilder) -> None:
+
+        def add_module_properties(index, name):
+            builder.addDoubleProperty(
+                f"{name} Angle", 
+                lambda: self.drivetrain.module_states[index].angle.radians(), 
+                lambda _: None
+            )
+            builder.addDoubleProperty(
+                f"{name} Velocity", 
+                lambda: self.drivetrain.module_states[index].speed, 
+                lambda _: None
+            )
+
+        for i, name in enumerate(self.names):
+            if i < len(self.drivetrain.module_states):
+                add_module_properties(i, name)
+
+        builder.addDoubleProperty(
+            "Robot Angle", 
+            lambda: self.drivetrain.heading.radians(), 
+            lambda _: None
+        )
 
 @dataclass
 class TrajectoryFollowerParameters:
