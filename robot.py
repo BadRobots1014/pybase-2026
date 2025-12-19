@@ -1,7 +1,8 @@
 from typing import Optional
-import wpilib
 
 import commands2
+import wpilib
+from pathplannerlib.auto import AutoBuilder
 
 from container import RobotContainer
 
@@ -13,9 +14,13 @@ class Robot(commands2.TimedCommandRobot):
 
     # Runs no matter the state
     def robotInit(self):
+        # Init robot and scheduler
         self.container = RobotContainer()
         self.scheduler = commands2.CommandScheduler.getInstance()
         self.autonomous_command: Optional[commands2.Command] = None
+        # Init dashboard values
+        self.auto_chooser = AutoBuilder.buildAutoChooser("MasterAuto")
+        wpilib.SmartDashboard.putData("Auto Chooser", self.auto_chooser)
 
     # Runs every cycle no matter the state
     def robotPeriodic(self):
@@ -24,7 +29,7 @@ class Robot(commands2.TimedCommandRobot):
 
     # Schedule Auto command when switched to "Auto"
     def autonomousInit(self) -> None:
-        self.autonomous_command = self.container.get_autonomous_command()
+        self.autonomous_command = self.auto_chooser.getSelected()
         if self.autonomous_command:
             self.autonomous_command.schedule()
 
@@ -32,10 +37,14 @@ class Robot(commands2.TimedCommandRobot):
     def autonomousPeriodic(self) -> None:
         return
 
-    # When no command is scheduled, Teleop command is scheduled automatically
-    def teleopInit(self) -> None:
+    # Cleanup auto after exit
+    def autonomousExit(self):
         if self.autonomous_command:
             self.autonomous_command.cancel()
+
+    # When no command is scheduled, Teleop command is scheduled automatically
+    def teleopInit(self) -> None:
+        return
 
     # Runs every cycle while the robot is in "Teleop"
     def teleopPeriodic(self) -> None:

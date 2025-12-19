@@ -116,7 +116,6 @@ sw_data = {
     "drive_open_loop": True,
     # auto_follower_params: Auto Trajectory Defaults
     "auto_follower_params": TrajectoryFollowerParameters(
-        # max_drive_velocity=4.5 * (u.m / u.s),
         theta_kP=1,
         xy_kP=1,
         drive_open_loop=False,

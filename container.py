@@ -203,8 +203,3 @@ class RobotContainer:
         return self.process_joystick_input(
             raw_stick_val, invert=invert, limit_ratio=self.angular_velocity_limit_ratio
         )
-
-    def get_autonomous_command(self):
-        return AutoBuilder.pathfindThenFollowPath(
-            self.autoPeriodPath, SW.auto_path_constraints
-        )
