@@ -17,6 +17,7 @@ from pathplannerlib.commands import FollowPathCommand
 from pathplannerlib.config import PIDConstants, RobotConfig
 from pathplannerlib.controller import PPHolonomicDriveController
 from pathplannerlib.path import PathPlannerPath
+from pathplannerlib.logging import PathPlannerLogging
 from pint import Quantity
 from typing_extensions import deprecated
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
@@ -96,6 +97,9 @@ class SwerveDrive(commands2.Subsystem):
         # Field to plot auto trajectories and robot pose
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData(self.field)
+        PathPlannerLogging.setLogActivePathCallback(
+            lambda poses: self.field.getObject("activePath").setPoses(poses)
+        )
 
         # AutoBuilder for users to create PathPlanner paths
         if path_following_params is not None:
