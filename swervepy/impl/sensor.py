@@ -12,7 +12,8 @@ from ..abstract.sensor import AbsoluteEncoder, Gyro
 
 class AbsoluteCANCoder(AbsoluteEncoder):
     def __init__(self, id_: int | tuple[int, str], invert: bool = False):
-        super().__init__()
+        # Initialize parent with a descriptive name
+        super().__init__(f"CANCoder_{id_[0] if isinstance(id_, tuple) else id_}")
 
         # Construct the CANCoder from either a tuple of motor ID and CAN bus ID or just a motor ID
         try:
@@ -21,15 +22,17 @@ class AbsoluteCANCoder(AbsoluteEncoder):
             self._encoder = phoenix6.hardware.CANcoder(id_)
 
         configs = phoenix6.configs.CANcoderConfiguration()
-        configs.magnet_sensor.absolute_sensor_discontinuity_point = 1  # Set sensor range between 0 and 360 degrees
-        configs.magnet_sensor.sensor_direction = phoenix6.signals.SensorDirectionValue(invert)
+        configs.magnet_sensor.absolute_sensor_discontinuity_point = (
+            1  # Set sensor range between 0 and 360 degrees
+        )
+        configs.magnet_sensor.sensor_direction = phoenix6.signals.SensorDirectionValue(
+            invert
+        )
 
         # Configs are automatically factory-defaulted
         self._encoder.configurator.apply(configs)
 
         self._position_signal = self._encoder.get_absolute_position()
-
-        wpilib.SmartDashboard.putData(f"Absolute CANCoder {id_}", self)
 
     @property
     def absolute_position(self) -> Rotation2d:
@@ -39,10 +42,9 @@ class AbsoluteCANCoder(AbsoluteEncoder):
 
 class AbsoluteDutyCycleEncoder(AbsoluteEncoder):
     def __init__(self, dio_pin: int):
-        super().__init__()
+        super().__init__(f"PWM_Encoder_{dio_pin}")
 
         self._encoder = wpilib.DutyCycleEncoder(dio_pin)
-        wpilib.SmartDashboard.putData(f"Absolute PWM Encoder {dio_pin}", self)
 
     @property
     def absolute_position_degrees(self) -> float:
@@ -60,14 +62,12 @@ class AbsoluteDutyCycleEncoder(AbsoluteEncoder):
 
 class PigeonGyro(Gyro):
     def __init__(self, id_: int, invert: bool = False):
-        super().__init__()
+        super().__init__(f"Pigeon_{id_}")
 
         self._gyro = phoenix5.sensors.PigeonIMU(id_)
         self.invert = invert
 
         self._sim_gyro = self._gyro.getSimCollection()
-
-        wpilib.SmartDashboard.putData("Pigeon IMU", self)
 
     def zero_heading(self):
         self._gyro.setYaw(0)
@@ -85,7 +85,8 @@ class PigeonGyro(Gyro):
 
 class Pigeon2Gyro(Gyro):
     def __init__(self, id_: int | tuple[int, str], invert: bool = False):
-        super().__init__()
+        # Initialize parent with a descriptive name
+        super().__init__(f"Pigeon2_{id_[0] if isinstance(id_, tuple) else id_}")
         self.invert = invert
 
         try:
@@ -97,8 +98,6 @@ class Pigeon2Gyro(Gyro):
 
         self._gyro_sim = self._gyro.sim_state
         self._yaw_signal = self._gyro.get_yaw()
-
-        wpilib.SmartDashboard.putData("Pigeon 2", self)
 
     def zero_heading(self):
         self._gyro.reset()
@@ -119,7 +118,7 @@ class DummyGyro(Gyro):
     """Gyro that does nothing on a real robot but functions normally in simulation"""
 
     def __init__(self, *args):
-        super().__init__()
+        super().__init__("DummyGyro")
         self._radians = 0
 
     def zero_heading(self):
@@ -127,6 +126,8 @@ class DummyGyro(Gyro):
 
     def simulation_periodic(self, delta_position: float):
         self._radians += delta_position
+        # Normalize angle to [-pi, pi] range to match typical gyro behavior
+        self._radians = math.atan2(math.sin(self._radians), math.cos(self._radians))
 
     @property
     def heading(self) -> Rotation2d:
@@ -147,7 +148,7 @@ class SparkMaxAbsoluteEncoder(AbsoluteEncoder):
         :param encoder_type: Type of encoder plugged in. Based on how the encoder transmits data
         """
 
-        super().__init__()
+        super().__init__(f"SparkMax_Encoder_{controller.getDeviceId()}")
 
         # Two types of absolute encoders can be plugged into the SPARK MAX data port: analog and duty cycle/PWM
         if encoder_type is SparkMaxEncoderType.ANALOG:
@@ -167,8 +168,6 @@ class SparkMaxAbsoluteEncoder(AbsoluteEncoder):
             rev.SparkMax.ResetMode.kNoResetSafeParameters,
             rev.SparkMax.PersistMode.kPersistParameters,
         )
-
-        wpilib.SmartDashboard.putData(f"Absolute Encoder {controller.getDeviceId()}", self)
 
     @property
     def absolute_position(self) -> Rotation2d:

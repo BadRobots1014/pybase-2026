@@ -159,12 +159,9 @@ class RobotContainer:
     def log_data(self):
         for pos in ("LF", "RF", "LB", "RB"):
             encoder = getattr(self, f"{pos.lower()}_enc")
-            wpilib.SmartDashboard.putNumber(
-                f"{pos} absolute encoder", encoder.absolute_position_degrees
-            )
-            wpilib.SmartDashboard.putNumber(
-                f"{pos} absolute encoder", encoder.absolute_position_degrees
-            )
+
+            # Update NetworkTables with current encoder data
+            encoder.periodic()
 
     @staticmethod
     def deadband(value, band):

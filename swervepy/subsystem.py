@@ -134,6 +134,9 @@ class SwerveDrive(commands2.Subsystem):
         wpilib.SmartDashboard.putData("Swerve/Swerve Modules", self.swerve_telemetry)
 
     def periodic(self):
+        # Gyro Telemetry
+        self._gyro.periodic()
+
         vision_pose = self._vision_pose_callback()
         # TODO: Add ability to specify custom timestamp
         if vision_pose:
