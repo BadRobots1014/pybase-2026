@@ -12,17 +12,17 @@ import wpilib.sysid
 import wpimath.estimator
 import wpimath.kinematics
 from commands2.sysid import SysIdRoutine
+from ntcore import NetworkTableInstance
 from pathplannerlib.auto import AutoBuilder
 from pathplannerlib.commands import FollowPathCommand
 from pathplannerlib.config import PIDConstants, RobotConfig
 from pathplannerlib.controller import PPHolonomicDriveController
-from pathplannerlib.path import PathPlannerPath
 from pathplannerlib.logging import PathPlannerLogging
+from pathplannerlib.path import PathPlannerPath
 from pint import Quantity
 from typing_extensions import deprecated
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
-from wpiutil import Sendable, SendableBuilder
 
 if TYPE_CHECKING:
     from wpimath.estimator import SwerveDrive4PoseEstimator
@@ -73,6 +73,25 @@ class SwerveDrive(commands2.Subsystem):
         self.max_angular_velocity: float = max_angular_velocity.m_as(u.rad / u.s)
         self.period_seconds = 0.02
 
+        # Set up NetworkTables for drivetrain telemetry
+        self._nt_inst = NetworkTableInstance.getDefault()
+        self._table = self._nt_inst.getTable("Swerve")
+
+        # Create publishers for drivetrain telemetry
+        self._robot_x_pub = self._table.getDoubleTopic("Robot X (m)").publish()
+        self._robot_y_pub = self._table.getDoubleTopic("Robot Y (m)").publish()
+        self._robot_heading_deg_pub = self._table.getDoubleTopic(
+            "Robot Heading (deg)"
+        ).publish()
+        self._robot_heading_rad_pub = self._table.getDoubleTopic(
+            "Robot Heading (rad)"
+        ).publish()
+        self._robot_vx_pub = self._table.getDoubleTopic("Robot Vx (mps)").publish()
+        self._robot_vy_pub = self._table.getDoubleTopic("Robot Vy (mps)").publish()
+        self._robot_omega_pub = self._table.getDoubleTopic(
+            "Robot Omega (radps)"
+        ).publish()
+
         # Pause init for a second before setting module offsets to avoid a bug related to inverting motors.
         # Fixes https://github.com/Team364/BaseFalconSwerve/issues/8.
         time.sleep(1)
@@ -90,9 +109,6 @@ class SwerveDrive(commands2.Subsystem):
         self._odometry: "SwerveDrive4PoseEstimator" = getattr(
             wpimath.estimator, f"SwerveDrive{len(modules)}PoseEstimator"
         )(self._kinematics, self._gyro.heading, self.module_positions, Pose2d())
-
-        for i, module in enumerate(modules):
-            wpilib.SmartDashboard.putData(f"Module {i}", module)
 
         # Field to plot auto trajectories and robot pose
         self.field = wpilib.Field2d()
@@ -130,12 +146,13 @@ class SwerveDrive(commands2.Subsystem):
             SysIdRoutine.Mechanism(self._sysid_drive, self._sysid_log, self, "drive"),
         )
 
-        self.swerve_telemetry = SwerveSendable(self)
-        wpilib.SmartDashboard.putData("Swerve/Swerve Modules", self.swerve_telemetry)
-
     def periodic(self):
-        # Gyro Telemetry
+        # Update gyro telemetry to NetworkTables
         self._gyro.periodic()
+
+        # Update module telemetry to NetworkTables
+        for module in self._modules:
+            module.periodic()
 
         vision_pose = self._vision_pose_callback()
         # TODO: Add ability to specify custom timestamp
@@ -148,6 +165,17 @@ class SwerveDrive(commands2.Subsystem):
 
         # Visualize robot position on field
         self.field.setRobotPose(robot_pose)
+
+        # Update drivetrain telemetry to NetworkTables
+        self._robot_x_pub.set(robot_pose.X())
+        self._robot_y_pub.set(robot_pose.Y())
+        self._robot_heading_deg_pub.set(robot_pose.rotation().degrees())
+        self._robot_heading_rad_pub.set(robot_pose.rotation().radians())
+
+        speeds = self.robot_relative_speeds
+        self._robot_vx_pub.set(speeds.vx)
+        self._robot_vy_pub.set(speeds.vy)
+        self._robot_omega_pub.set(speeds.omega)
 
     def simulationPeriodic(self):
         # Run a periodic simulation method that updates sensor readings based on desired velocities and rotations
@@ -415,7 +443,7 @@ class SwerveDrive(commands2.Subsystem):
         Run a quasistatic characterization test. The robot will move until this command is cancelled.
 
         In this test, the mechanism is gradually sped-up such that the voltage corresponding to
-        acceleration is negligible (hence, “as if static”).
+        acceleration is negligible (hence, "as if static").
 
         :param direction: The direction the robot will drive
         """
@@ -425,7 +453,7 @@ class SwerveDrive(commands2.Subsystem):
         """
         Run a dynamic characterization test. The robot will move until this command is cancelled.
 
-        In this test, a constant ‘step voltage’ is given to the mechanism, so that the
+        In this test, a constant 'step voltage' is given to the mechanism, so that the
         behavior while accelerating can be determined.
 
         :param direction: The direction the robot will drive
@@ -454,6 +482,14 @@ class _TeleOpCommand(commands2.Command):
         self.field_relative = field_relative
         self.open_loop = drive_open_loop
 
+        # Set up NetworkTables for command telemetry
+        self._nt_inst = NetworkTableInstance.getDefault()
+        self._table = self._nt_inst.getTable("Swerve/TeleOp")
+        self._field_relative_pub = self._table.getBooleanTopic(
+            "Field Relative"
+        ).publish()
+        self._open_loop_pub = self._table.getBooleanTopic("Open Loop").publish()
+
     def execute(self):
         self._swerve.drive(
             Translation2d(self.translation(), self.strafe())
@@ -463,17 +499,9 @@ class _TeleOpCommand(commands2.Command):
             self.open_loop,
         )
 
-    def initSendable(self, builder: SendableBuilder):
-        builder.addBooleanProperty(
-            "Field Relative",
-            lambda: self.field_relative,
-            lambda val: setattr(self, "field_relative", val),
-        )
-        builder.addBooleanProperty(
-            "Open Loop",
-            lambda: self.open_loop,
-            lambda val: setattr(self, "drive_open_loop", val),
-        )
+        # Update command telemetry
+        self._field_relative_pub.set(self.field_relative)
+        self._open_loop_pub.set(self.open_loop)
 
     def toggle_field_relative(self):
         self.field_relative = not self.field_relative
@@ -481,36 +509,6 @@ class _TeleOpCommand(commands2.Command):
     def toggle_open_loop(self):
         self.open_loop = not self.open_loop
 
-
-class SwerveSendable(Sendable):
-    def __init__(self, drivetrain):
-        super().__init__()
-        self.drivetrain = drivetrain
-        self.names = ["Front Left", "Front Right", "Back Left", "Back Right"]
-
-    def initSendable(self, builder: SendableBuilder) -> None:
-
-        def add_module_properties(index, name):
-            builder.addDoubleProperty(
-                f"{name} Angle", 
-                lambda: self.drivetrain.module_states[index].angle.radians(), 
-                lambda _: None
-            )
-            builder.addDoubleProperty(
-                f"{name} Velocity", 
-                lambda: self.drivetrain.module_states[index].speed, 
-                lambda _: None
-            )
-
-        for i, name in enumerate(self.names):
-            if i < len(self.drivetrain.module_states):
-                add_module_properties(i, name)
-
-        builder.addDoubleProperty(
-            "Robot Angle", 
-            lambda: self.drivetrain.heading.radians(), 
-            lambda _: None
-        )
 
 @dataclass
 class TrajectoryFollowerParameters:

@@ -50,6 +50,7 @@ class RobotContainer:
                     absolute_encoder=self.lf_enc,
                 ),
                 placement=Translation2d(*components.module_locations["LF"]),
+                name="LeftFront",
             ),
             # Right Front module
             CoaxialSwerveModule(
@@ -64,6 +65,7 @@ class RobotContainer:
                     absolute_encoder=self.rf_enc,
                 ),
                 placement=Translation2d(*components.module_locations["RF"]),
+                name="RightFront",
             ),
             # Left Back module
             CoaxialSwerveModule(
@@ -78,6 +80,7 @@ class RobotContainer:
                     absolute_encoder=self.lb_enc,
                 ),
                 placement=Translation2d(*components.module_locations["LB"]),
+                name="LeftBack",
             ),
             # Right Back module
             CoaxialSwerveModule(
@@ -92,6 +95,7 @@ class RobotContainer:
                     absolute_encoder=self.rb_enc,
                 ),
                 placement=Translation2d(*components.module_locations["RB"]),
+                name="RightBack",
             ),
         )
 

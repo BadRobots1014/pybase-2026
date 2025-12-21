@@ -12,12 +12,11 @@ from pint import Quantity
 from typing_extensions import deprecated
 from wpimath.controller import SimpleMotorFeedforwardMeters
 from wpimath.geometry import Rotation2d
-from wpimath.system.plant import DCMotor
 
-from .sensor import SparkMaxEncoderType, SparkMaxAbsoluteEncoder
 from .. import conversions, u
-from ..abstract.motor import CoaxialDriveComponent, CoaxialAzimuthComponent
+from ..abstract.motor import CoaxialAzimuthComponent, CoaxialDriveComponent
 from ..abstract.sensor import AbsoluteEncoder
+from .sensor import SparkMaxAbsoluteEncoder, SparkMaxEncoderType
 
 
 class NeutralMode(IntEnum):
@@ -37,7 +36,9 @@ class TypicalDriveComponentParameters:
 
     continuous_current_limit: int
     peak_current_limit: int
-    peak_current_duration: float  # Unused for REV implementation, but makes interoperability easier
+    peak_current_duration: (
+        float  # Unused for REV implementation, but makes interoperability easier
+    )
 
     neutral_mode: NeutralMode
 
@@ -68,7 +69,9 @@ class TypicalAzimuthComponentParameters:
 
     continuous_current_limit: int
     peak_current_limit: int
-    peak_current_duration: float  # Unused for REV implementation, but makes interoperability easier
+    peak_current_duration: (
+        float  # Unused for REV implementation, but makes interoperability easier
+    )
 
     neutral_mode: NeutralMode
 
@@ -85,7 +88,9 @@ class TypicalAzimuthComponentParameters:
 
 
 class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
-    def __init__(self, id_: int | tuple[int, str], parameters: TypicalDriveComponentParameters):
+    def __init__(
+        self, id_: int | tuple[int, str], parameters: TypicalDriveComponentParameters
+    ):
         self._params = parameters.in_standard_units()
 
         try:
@@ -98,7 +103,9 @@ class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
         self._config()
         self.reset()
 
-        self._feedforward = SimpleMotorFeedforwardMeters(parameters.kS, parameters.kV, parameters.kA)
+        self._feedforward = SimpleMotorFeedforwardMeters(
+            parameters.kS, parameters.kV, parameters.kA
+        )
 
         self._motor_sim = self._motor.sim_state
         self._motor_sim.orientation = (
@@ -120,19 +127,31 @@ class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
 
         configs.current_limits.supply_current_limit_enable = True
         configs.current_limits.supply_current_limit = self._params.peak_current_limit
-        configs.current_limits.supply_current_lower_time = self._params.peak_current_duration
-        configs.current_limits.supply_current_lower_limit = self._params.continuous_current_limit
+        configs.current_limits.supply_current_lower_time = (
+            self._params.peak_current_duration
+        )
+        configs.current_limits.supply_current_lower_limit = (
+            self._params.continuous_current_limit
+        )
 
         configs.slot0.k_p = self._params.kP
         configs.slot0.k_i = self._params.kI
         configs.slot0.k_d = self._params.kD
 
-        configs.open_loop_ramps.duty_cycle_open_loop_ramp_period = self._params.open_loop_ramp_rate
-        configs.closed_loop_ramps.duty_cycle_closed_loop_ramp_period = self._params.closed_loop_ramp_rate
+        configs.open_loop_ramps.duty_cycle_open_loop_ramp_period = (
+            self._params.open_loop_ramp_rate
+        )
+        configs.closed_loop_ramps.duty_cycle_closed_loop_ramp_period = (
+            self._params.closed_loop_ramp_rate
+        )
 
         # Convert from generalized neutral mode and invert value to CTRE API enums
-        configs.motor_output.neutral_mode = phoenix6.signals.NeutralModeValue(self._params.neutral_mode)
-        configs.motor_output.inverted = phoenix6.signals.InvertedValue(self._params.invert_motor)
+        configs.motor_output.neutral_mode = phoenix6.signals.NeutralModeValue(
+            self._params.neutral_mode
+        )
+        configs.motor_output.inverted = phoenix6.signals.InvertedValue(
+            self._params.invert_motor
+        )
 
         configs.feedback.sensor_to_mechanism_ratio = self._params.gear_ratio
 
@@ -144,13 +163,21 @@ class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
         self._motor.set_control(self._duty_cycle_request.with_output(percent_out))
 
         # TODO Improve motor simulation to use DCMotorSim and physics
-        converted_velocity = conversions.metres_to_rotations(velocity, self._params.wheel_circumference)
+        converted_velocity = conversions.metres_to_rotations(
+            velocity, self._params.wheel_circumference
+        )
         self._motor_sim.set_rotor_velocity(self._params.gear_ratio * converted_velocity)
 
     def follow_velocity_closed(self, velocity: float):
-        converted_velocity = conversions.metres_to_rotations(velocity, self._params.wheel_circumference)
+        converted_velocity = conversions.metres_to_rotations(
+            velocity, self._params.wheel_circumference
+        )
         ff = self._feedforward.calculate(velocity)
-        self._motor.set_control(self._velocity_request.with_velocity(converted_velocity).with_feed_forward(ff))
+        self._motor.set_control(
+            self._velocity_request.with_velocity(converted_velocity).with_feed_forward(
+                ff
+            )
+        )
 
         self._motor_sim.set_rotor_velocity(self._params.gear_ratio * converted_velocity)
 
@@ -168,11 +195,15 @@ class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
 
     @property
     def velocity(self) -> float:
-        return conversions.rotations_to_metres(self._velocity_signal.refresh().value, self._params.wheel_circumference)
+        return conversions.rotations_to_metres(
+            self._velocity_signal.refresh().value, self._params.wheel_circumference
+        )
 
     @property
     def distance(self) -> float:
-        return conversions.rotations_to_metres(self._position_signal.refresh().value, self._params.wheel_circumference)
+        return conversions.rotations_to_metres(
+            self._position_signal.refresh().value, self._params.wheel_circumference
+        )
 
     @property
     def voltage(self) -> float:
@@ -219,18 +250,28 @@ class Falcon500CoaxialAzimuthComponent(CoaxialAzimuthComponent):
 
         configs.current_limits.supply_current_limit_enable = True
         configs.current_limits.supply_current_limit = self._params.peak_current_limit
-        configs.current_limits.supply_current_lower_time = self._params.peak_current_duration
-        configs.current_limits.supply_current_lower_limit = self._params.continuous_current_limit
+        configs.current_limits.supply_current_lower_time = (
+            self._params.peak_current_duration
+        )
+        configs.current_limits.supply_current_lower_limit = (
+            self._params.continuous_current_limit
+        )
 
         configs.slot0.k_p = self._params.kP
         configs.slot0.k_i = self._params.kI
         configs.slot0.k_d = self._params.kD
 
-        configs.closed_loop_ramps.duty_cycle_closed_loop_ramp_period = self._params.ramp_rate
+        configs.closed_loop_ramps.duty_cycle_closed_loop_ramp_period = (
+            self._params.ramp_rate
+        )
 
         # Convert from generalized neutral mode and invert value to CTRE API enums
-        configs.motor_output.neutral_mode = phoenix6.signals.NeutralModeValue(self._params.neutral_mode)
-        configs.motor_output.inverted = phoenix6.signals.InvertedValue(self._params.invert_motor)
+        configs.motor_output.neutral_mode = phoenix6.signals.NeutralModeValue(
+            self._params.neutral_mode
+        )
+        configs.motor_output.inverted = phoenix6.signals.InvertedValue(
+            self._params.invert_motor
+        )
 
         configs.feedback.sensor_to_mechanism_ratio = self._params.gear_ratio
 
@@ -268,14 +309,18 @@ class NEOCoaxialDriveComponent(CoaxialDriveComponent):
         self._config()
         self.reset()
 
-        self._feedforward = SimpleMotorFeedforwardMeters(parameters.kS, parameters.kV, parameters.kA)
+        self._feedforward = SimpleMotorFeedforwardMeters(
+            parameters.kS, parameters.kV, parameters.kA
+        )
 
         self._sim_encoder = rev.SparkRelativeEncoderSim(self._motor)
 
     def _config(self):
         settings = rev.SparkBaseConfig()
 
-        settings.closedLoop.pid(self._params.kP, self._params.kI, self._params.kD, rev.ClosedLoopSlot.kSlot0)
+        settings.closedLoop.pid(
+            self._params.kP, self._params.kI, self._params.kD, rev.ClosedLoopSlot.kSlot0
+        )
 
         settings.smartCurrentLimit(self._params.continuous_current_limit)
         settings.secondaryCurrentLimit(self._params.peak_current_limit)
@@ -288,7 +333,9 @@ class NEOCoaxialDriveComponent(CoaxialDriveComponent):
         # Convert generic neutral mode to REV IdleMode
         settings.setIdleMode(rev.SparkBaseConfig.IdleMode(self._params.neutral_mode))
 
-        position_conversion_factor = self._params.wheel_circumference / self._params.gear_ratio
+        position_conversion_factor = (
+            self._params.wheel_circumference / self._params.gear_ratio
+        )
         settings.encoder.positionConversionFactor(position_conversion_factor)
         settings.encoder.velocityConversionFactor(position_conversion_factor / 60)
 
@@ -357,7 +404,9 @@ class NEOCoaxialAzimuthComponent(CoaxialAzimuthComponent):
 
         if isinstance(absolute_encoder, SparkMaxEncoderType):
             # Construct an AbsoluteEncoder from sensor plugged into SPARK MAX
-            self._absolute_encoder = SparkMaxAbsoluteEncoder(self._motor, absolute_encoder)
+            self._absolute_encoder = SparkMaxAbsoluteEncoder(
+                self._motor, absolute_encoder
+            )
         else:
             self._absolute_encoder = absolute_encoder
 
@@ -370,7 +419,9 @@ class NEOCoaxialAzimuthComponent(CoaxialAzimuthComponent):
     def _config(self):
         settings = rev.SparkBaseConfig()
 
-        settings.closedLoop.pid(self._params.kP, self._params.kI, self._params.kD, rev.ClosedLoopSlot.kSlot0)
+        settings.closedLoop.pid(
+            self._params.kP, self._params.kI, self._params.kD, rev.ClosedLoopSlot.kSlot0
+        )
 
         settings.smartCurrentLimit(self._params.continuous_current_limit)
         settings.secondaryCurrentLimit(self._params.peak_current_limit)

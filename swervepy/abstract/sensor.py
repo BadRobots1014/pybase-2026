@@ -2,7 +2,7 @@ from abc import abstractmethod
 
 from ntcore import NetworkTableInstance
 from wpimath.geometry import Rotation2d
-from wpiutil import Sendable, SendableBuilder
+from wpiutil import Sendable
 
 from . import SendableABCMeta
 
@@ -49,16 +49,6 @@ class Gyro(Sendable, metaclass=SendableABCMeta):
         self._heading_deg_pub.set(current_heading.degrees())
         self._heading_rad_pub.set(current_heading.radians())
 
-    def initSendable(self, builder: SendableBuilder):
-        """Maintain compatibility with SmartDashboard/Sendable interface"""
-        builder.setSmartDashboardType("Gyro")
-        builder.addDoubleProperty(
-            "Value", lambda: self.heading.degrees(), lambda _: None
-        )
-        builder.addDoubleProperty(
-            "Heading (rad)", lambda: self.heading.radians(), lambda _: None
-        )
-
 
 class AbsoluteEncoder(Sendable, metaclass=SendableABCMeta):
     def __init__(self, name: str = "AbsoluteEncoder"):
@@ -95,17 +85,3 @@ class AbsoluteEncoder(Sendable, metaclass=SendableABCMeta):
         current_position = self.absolute_position
         self._position_deg_pub.set(current_position.degrees())
         self._position_rad_pub.set(current_position.radians())
-
-    def initSendable(self, builder: SendableBuilder):
-        """Maintain compatibility with SmartDashboard/Sendable interface"""
-        builder.setSmartDashboardType("AbsoluteEncoder")
-        builder.addDoubleProperty(
-            "Absolute Rotation (rad)",
-            lambda: self.absolute_position.radians(),
-            lambda _: None,
-        )
-        builder.addDoubleProperty(
-            "Absolute Rotation (deg)",
-            lambda: self.absolute_position.degrees(),
-            lambda _: None,
-        )

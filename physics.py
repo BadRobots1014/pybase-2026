@@ -21,6 +21,7 @@ class PhysicsEngine(core.PhysicsEngine):
                 drive=DummyCoaxialDriveComponent(),
                 azimuth=DummyCoaxialAzimuthComponent(),
                 placement=module.placement,
+                name=module.name,
             )
             for module in self.swerve._modules
         )
