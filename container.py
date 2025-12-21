@@ -156,13 +156,6 @@ class RobotContainer:
             )
         )
 
-    def log_data(self):
-        for pos in ("LF", "RF", "LB", "RB"):
-            encoder = getattr(self, f"{pos.lower()}_enc")
-
-            # Update NetworkTables with current encoder data
-            encoder.periodic()
-
     @staticmethod
     def deadband(value, band):
         return value if abs(value) > band else 0
