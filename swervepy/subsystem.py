@@ -117,6 +117,9 @@ class SwerveDrive(commands2.Subsystem):
             lambda poses: self.field.getObject("activePath").setPoses(poses)
         )
 
+        # Disable PathPlanner path visualization by setting an empty callback
+        PathPlannerLogging.setLogActivePathCallback(lambda poses: None)
+
         # AutoBuilder for users to create PathPlanner paths
         if path_following_params is not None:
             AutoBuilder.configure(
