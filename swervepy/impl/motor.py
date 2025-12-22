@@ -462,52 +462,6 @@ class NEOCoaxialAzimuthComponent(CoaxialAzimuthComponent):
         return Rotation2d.fromDegrees(self._encoder.getPosition())
 
 
-@deprecated(
-    "This component has been replaced by DummyCoaxialDriveComponent and DummyCoaxialAzimuthComponent."
-    "Use those if you want simulation support."
-)
-class DummyCoaxialComponent(CoaxialDriveComponent, CoaxialAzimuthComponent):
-    """Coaxial drive or azimuth component that does nothing"""
-
-    def __init__(self, *args):
-        pass
-
-    def follow_velocity_open(self, velocity: float):
-        pass
-
-    def follow_velocity_closed(self, velocity: float):
-        pass
-
-    def set_voltage(self, volts: float):
-        pass
-
-    def reset(self):
-        pass
-
-    @property
-    def velocity(self) -> float:
-        return 0
-
-    @property
-    def distance(self) -> float:
-        return 0
-
-    @property
-    def voltage(self) -> float:
-        return 0
-
-    def follow_angle(self, angle: Rotation2d):
-        pass
-
-    @property
-    def rotational_velocity(self) -> float:
-        return 0
-
-    @property
-    def angle(self) -> Rotation2d:
-        return Rotation2d.fromDegrees(0)
-
-
 class DummyCoaxialDriveComponent(CoaxialDriveComponent):
     """Coaxial drive component that does nothing on a real robot, but functions normally in simulation"""
 

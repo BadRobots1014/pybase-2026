@@ -19,28 +19,25 @@ __all__ = [
     "CoaxialSwerveModule",
     "SparkMaxEncoderType",
     "SparkMaxAbsoluteEncoder",
-    "DummyCoaxialComponent",
     "DummyGyro",
 ]
 
 from .motor import (
-    NeutralMode,
-    TypicalDriveComponentParameters,
-    TypicalAzimuthComponentParameters,
     Falcon500CoaxialAzimuthComponent,
     Falcon500CoaxialDriveComponent,
+    NEOCoaxialAzimuthComponent,
     NEOCoaxialDriveComponent,
-    NEOCoaxialAzimuthComponent,
-    NEOCoaxialAzimuthComponent,
-    DummyCoaxialComponent,
+    NeutralMode,
+    TypicalAzimuthComponentParameters,
+    TypicalDriveComponentParameters,
 )
 from .sensor import (
     AbsoluteCANCoder,
     AbsoluteDutyCycleEncoder,
-    PigeonGyro,
-    Pigeon2Gyro,
-    SparkMaxEncoderType,
-    SparkMaxAbsoluteEncoder,
     DummyGyro,
+    Pigeon2Gyro,
+    PigeonGyro,
+    SparkMaxAbsoluteEncoder,
+    SparkMaxEncoderType,
 )
 from .system import CoaxialSwerveModule
