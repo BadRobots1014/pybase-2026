@@ -381,64 +381,6 @@ class SwerveDrive(commands2.Subsystem):
             self, translation, strafe, rotation, field_relative, drive_open_loop
         )
 
-    @deprecated(
-        "SwervePy automatically configures PathPlanner AutoBuilder. Use native PathPlanner functions instead."
-    )
-    def follow_trajectory_command(
-        self,
-        path: PathPlannerPath,
-        parameters: "TrajectoryFollowerParameters",
-        first_path: bool = False,
-        flip_path: Callable[[], bool] = lambda: False,
-    ) -> commands2.Command:
-        """
-        Construct a command that follows a trajectory
-
-        :param path: The path to follow
-        :param parameters: Options that determine how the robot will follow the trajectory
-        :param first_path: If True, the robot's pose will be reset to the trajectory's initial pose
-        :param flip_path: Method returning whether to flip the provided path.
-               This will maintain a global blue alliance origin.
-        :return: Trajectory-follower command
-        """
-
-        # TODO: Re-impl trajectory visualisation on Field2d
-
-        # Find the drive base radius (the distance from the center of the robot to the furthest module)
-        radius = greatest_distance_from_translations(
-            [module.placement for module in self._modules]
-        )
-
-        # Position feedback controller for following waypoints
-        controller = PPHolonomicDriveController(
-            PIDConstants(parameters.xy_kP),
-            PIDConstants(parameters.theta_kP),
-        )
-
-        # Trajectory follower command
-        command = FollowPathCommand(
-            path,
-            lambda: self.pose,
-            lambda: self.robot_relative_speeds,
-            lambda speeds, feedforwards: self.drive(
-                speeds, drive_open_loop=parameters.drive_open_loop
-            ),
-            controller,
-            RobotConfig.fromGUISettings(),
-            flip_path,
-            self,
-        )
-
-        # If this is the first path in a sequence, reset the robot's pose so that it aligns with the start of the path
-        if first_path:
-            initial_pose = path.getStartingHolonomicPose()
-            if initial_pose is not None:
-                command = command.beforeStarting(
-                    commands2.InstantCommand(lambda: self.reset_odometry(initial_pose))
-                )
-
-        return command
-
     def sys_id_quasistatic(
         self, direction: SysIdRoutine.Direction
     ) -> commands2.Command:
