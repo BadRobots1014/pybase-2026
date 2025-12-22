@@ -113,12 +113,11 @@ class SwerveDrive(commands2.Subsystem):
         # Field to plot auto trajectories and robot pose
         self.field = wpilib.Field2d()
         wpilib.SmartDashboard.putData(self.field)
-        PathPlannerLogging.setLogActivePathCallback(
-            lambda poses: self.field.getObject("activePath").setPoses(poses)
-        )
 
-        # Disable PathPlanner path visualization by setting an empty callback
-        PathPlannerLogging.setLogActivePathCallback(lambda poses: None)
+        # Enable PathPlanner path Visualization
+        # PathPlannerLogging.setLogActivePathCallback(
+        #    lambda poses: self.field.getObject("activePath").setPoses(poses)
+        # )
 
         # AutoBuilder for users to create PathPlanner paths
         if path_following_params is not None:
