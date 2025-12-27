@@ -34,7 +34,7 @@ class Camera(ABC):
     # (x, y, z) standard deviation (confidence) of pose (lower is better)
     # all three will be passed into the kalman filter that keeps track of robot pose
     @abstractmethod
-    def get_vision_measurement(self) -> Tuple[Pose2d, float, (float, float, float)]:
+    def get_vision_measurement(self) -> Tuple[Pose2d, float, Tuple[float, float, float]]:
         raise NotImplementedError
 
 
