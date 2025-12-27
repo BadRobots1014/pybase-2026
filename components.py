@@ -6,15 +6,15 @@ code takes up space, it can obscure what's going on around it, so we'll do
 all that here instead of in the container.py module.
 """
 
-from constants import PHYS, MECH, ELEC, OP, SW
-from swervepy.impl import (
+from constants import ELEC, MECH, OP, PHYS, SW
+from hardware.impl import (
     # Replace these classes with the ones that apply to your robot
     AbsoluteCANCoder,
+    DummyGyro,
     NEOCoaxialAzimuthComponent,
     NEOCoaxialDriveComponent,
-    TypicalDriveComponentParameters,
     TypicalAzimuthComponentParameters,
-    DummyGyro,
+    TypicalDriveComponentParameters,
 )
 
 # Define which components you're using (e.g. which motors you're using)

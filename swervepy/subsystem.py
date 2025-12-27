@@ -4,14 +4,13 @@ import math
 import time
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import TYPE_CHECKING, Callable, Iterable, Optional, Tuple, List
+from typing import TYPE_CHECKING, Callable, Iterable, List, Optional
 
 import commands2
 import wpilib
 import wpilib.sysid
 import wpimath.estimator
 import wpimath.kinematics
-import wpiutil
 from commands2.sysid import SysIdRoutine
 from ntcore import NetworkTableInstance
 from pathplannerlib.auto import AutoBuilder
@@ -28,8 +27,8 @@ if TYPE_CHECKING:
     from wpimath.estimator import SwerveDrive4PoseEstimator
     from wpimath.kinematics import SwerveDrive4Kinematics
 
+from hardware.abstract import Gyro, SwerveModule
 from swervepy import u
-from swervepy.abstract import Gyro, SwerveModule
 
 
 class SwerveDrive(commands2.Subsystem):

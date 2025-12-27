@@ -1,13 +1,12 @@
 import logging
 
 import wpilib
-
 from wpimath.geometry import Rotation2d, Translation2d
 
 import components
 from constants import ELEC, MECH, OP, PHYS, SW, VI
+from hardware.impl import CoaxialSwerveModule
 from swervepy import SwerveDrive
-from swervepy.impl import CoaxialSwerveModule
 
 logger = logging.getLogger("your.robot")
 
@@ -122,7 +121,7 @@ class RobotContainer:
             OP.max_speed,
             OP.max_angular_velocity,
             SW.auto_follower_params,
-            VI.camera_list
+            VI.camera_list,
         )
 
         # Set the swerve subsystem's default command to teleoperate using

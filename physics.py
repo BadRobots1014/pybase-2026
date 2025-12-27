@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 from pyfrc.physics import core
 
-from swervepy.impl import CoaxialSwerveModule, DummyGyro
-from swervepy.impl.motor import DummyCoaxialAzimuthComponent, DummyCoaxialDriveComponent
+from hardware.impl import CoaxialSwerveModule, DummyGyro
+from hardware.impl.motor import DummyCoaxialAzimuthComponent, DummyCoaxialDriveComponent
 
 # explicit importing causes errors, only needed for type checking
 if TYPE_CHECKING:
@@ -14,7 +14,7 @@ class PhysicsEngine(core.PhysicsEngine):
     def __init__(self, physics_controller, robot: "Robot"):
         self.physics_controller = physics_controller
 
-        # Switch all swerve motors to fake components for sim
+        # Switch all physical components to dummy versions
         self.swerve = robot.container.swerve
         self.swerve._modules = tuple(
             CoaxialSwerveModule(
@@ -25,8 +25,8 @@ class PhysicsEngine(core.PhysicsEngine):
             )
             for module in self.swerve._modules
         )
-
         self.swerve._gyro = DummyGyro()
+        self.swerve._camera_list = []
 
         return
 

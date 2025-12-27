@@ -9,7 +9,6 @@ import phoenix6.hardware
 import phoenix6.signals
 import rev
 from pint import Quantity
-from typing_extensions import deprecated
 from wpimath.controller import SimpleMotorFeedforwardMeters
 from wpimath.geometry import Rotation2d
 

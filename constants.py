@@ -17,12 +17,11 @@ This file defines constants related to your robot.  These constants include:
 import math
 from collections import namedtuple
 
-import phoenix5
 import rev
 from pathplannerlib.path import PathConstraints
-from vision.impl import Limelight
 
 from swervepy import TrajectoryFollowerParameters, u
+from vision.impl import Limelight
 
 # Physical constants
 phys_data = {
