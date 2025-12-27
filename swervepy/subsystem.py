@@ -112,7 +112,7 @@ class SwerveDrive(commands2.Subsystem):
 
         # Field to plot auto trajectories and robot pose
         self.field = wpilib.Field2d()
-        SendableRegistry.add(self.field, "Field2d")
+        wpilib.SmartDashboard.putData(self.field)
 
         # Enable PathPlanner path Visualization. Causes artificats on sim screen, but looks great in elastic
         # PathPlannerLogging.setLogActivePathCallback(

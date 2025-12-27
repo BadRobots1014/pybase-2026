@@ -22,10 +22,12 @@ class Robot(commands2.TimedCommandRobot):
         self.autonomous_command: Optional[commands2.Command] = None
         # Init dashboard values
         self.auto_chooser = AutoBuilder.buildAutoChooser("MasterAuto")
-        SendableRegistry.add(self.auto_chooser, "AutoChooser")
+        wpilib.SmartDashboard.putData("Auto Chooser", self.auto_chooser)
 
-        self.nt_inst =  NetworkTableInstance.getDefault()
-        self.match_time_pub = self.nt_inst.getFloatTopic("Match Info/Match Time").publish()
+        self.nt_inst = NetworkTableInstance.getDefault()
+        self.match_time_pub = self.nt_inst.getFloatTopic(
+            "Match Info/Match Time"
+        ).publish()
 
     # Runs every cycle no matter the state
     def robotPeriodic(self):
