@@ -131,23 +131,6 @@ class RobotContainer:
             SW.auto_follower_params,
         )
 
-        # Cache Auto path to reduce calculations in match
-        bezier_points = PathPlannerPath.waypointsFromPoses(
-            [
-                Pose2d(1.0, 1.0, Rotation2d.fromDegrees(0)),
-                Pose2d(3.0, 1.0, Rotation2d.fromDegrees(0)),
-                Pose2d(5.0, 3.0, Rotation2d.fromDegrees(90)),
-            ]
-        )
-        self.autoPeriodPath = PathPlannerPath(
-            waypoints=bezier_points,
-            constraints=PathConstraints(3.0, 3.0, 2 * math.pi, 4 * math.pi),
-            ideal_starting_state=IdealStartingState(0.0, Rotation2d.fromDegrees(0)),
-            goal_end_state=GoalEndState(
-                0.0, Rotation2d.fromDegrees(-90)
-            ),  # Zero velocity and facing 90 degrees clockwise
-        )
-
         # Set the swerve subsystem's default command to teleoperate using
         # the controller joysticks
         self.swerve.setDefaultCommand(
