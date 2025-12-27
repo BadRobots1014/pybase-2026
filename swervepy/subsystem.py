@@ -4,7 +4,7 @@ import math
 import time
 from dataclasses import dataclass
 from functools import singledispatchmethod
-from typing import TYPE_CHECKING, Callable, Iterable, Optional
+from typing import TYPE_CHECKING, Callable, Iterable, Optional, Tuple, List
 
 import commands2
 import wpilib
@@ -19,6 +19,8 @@ from pathplannerlib.controller import PPHolonomicDriveController
 from pint import Quantity
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
+
+from vision.abstract import Camera
 
 if TYPE_CHECKING:
     from wpimath.estimator import SwerveDrive4PoseEstimator
@@ -47,7 +49,7 @@ class SwerveDrive(commands2.Subsystem):
         max_velocity: Quantity,
         max_angular_velocity: Quantity,
         path_following_params: Optional["TrajectoryFollowerParameters"] = None,
-        vision_pose_callback: Callable[[], Optional[Pose2d]] = lambda: None,
+        camera_list: Optional[List[Camera]] = None,
     ):
         """
         Construct a swerve drivetrain as a Subsystem.
@@ -56,15 +58,16 @@ class SwerveDrive(commands2.Subsystem):
         :param gyro: A gyro sensor that provides a CCW+ heading reading of the chassis
         :param max_velocity: The actual maximum velocity of the robot
         :param max_angular_velocity: The actual maximum angular (turning) velocity of the robot
-        :param vision_pose_callback: An optional method that returns the robot's pose derived from vision.
-               This pose from this method is integrated into the robot's odometry.
+        :param camera_list: A list of cameras to update odometry
         """
 
         super().__init__()
 
         self._modules = modules
         self._gyro = gyro
-        self._vision_pose_callback = vision_pose_callback
+        if camera_list is None:
+            camera_list = []
+        self._camera_list = camera_list
         self.max_velocity: float = max_velocity.m_as(u.m / u.s)
         self.max_angular_velocity: float = max_angular_velocity.m_as(u.rad / u.s)
         self.period_seconds = 0.02
@@ -152,12 +155,9 @@ class SwerveDrive(commands2.Subsystem):
         for module in self._modules:
             module.periodic()
 
-        vision_pose = self._vision_pose_callback()
-        # TODO: Add ability to specify custom timestamp
-        if vision_pose:
-            self._odometry.addVisionMeasurement(
-                vision_pose, wpilib.Timer.getFPGATimestamp()
-            )
+        for cam in self._camera_list:
+            if cam.vision_measurement_valid():
+                self._odometry.addVisionMeasurement(*cam.get_vision_measurement())
 
         robot_pose = self._odometry.update(self._gyro.heading, self.module_positions)
 
@@ -310,7 +310,7 @@ class SwerveDrive(commands2.Subsystem):
 
     def reset_odometry_to_vision(self):
         """Reset the robot's pose to the vision pose estimation"""
-        estimated_pose = self._vision_pose_callback()
+        estimated_pose = self._vision_pose_valid_callback()
         if estimated_pose:
             self.reset_odometry(estimated_pose)
 

@@ -10,6 +10,8 @@ This file defines constants related to your robot.  These constants include:
  * Operation constants (desired max velocity, max turning speed)
 
  * Software constants (USB ID for driver joystick)
+
+ * Vision constants (defining cameras, enabling vision poses)
 """
 
 import math
@@ -18,6 +20,7 @@ from collections import namedtuple
 import phoenix5
 import rev
 from pathplannerlib.path import PathConstraints
+from vision.impl import Limelight
 
 from swervepy import TrajectoryFollowerParameters, u
 
@@ -139,3 +142,9 @@ sw_data = {
     "kA": 0,
 }
 SW = namedtuple("Data", sw_data.keys())(**sw_data)
+
+vi_data = {
+    # list of camera objects to get poses from
+    "camera_list": [Limelight()]
+}
+VI = namedtuple("Data", vi_data.keys())(**vi_data)

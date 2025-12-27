@@ -1,18 +1,11 @@
 import logging
-import math
 
 import wpilib
-from pathplannerlib.auto import AutoBuilder
-from pathplannerlib.path import (
-    GoalEndState,
-    IdealStartingState,
-    PathConstraints,
-    PathPlannerPath,
-)
-from wpimath.geometry import Pose2d, Rotation2d, Translation2d
+
+from wpimath.geometry import Rotation2d, Translation2d
 
 import components
-from constants import ELEC, MECH, OP, PHYS, SW
+from constants import ELEC, MECH, OP, PHYS, SW, VI
 from swervepy import SwerveDrive
 from swervepy.impl import CoaxialSwerveModule
 
@@ -129,6 +122,7 @@ class RobotContainer:
             OP.max_speed,
             OP.max_angular_velocity,
             SW.auto_follower_params,
+            VI.camera_list
         )
 
         # Set the swerve subsystem's default command to teleoperate using
