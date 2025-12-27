@@ -4,6 +4,7 @@ Implementations can be found in the impl module, or the user may define their ow
 """
 
 __all__ = [
+    "Camera",
     "SendableABCMeta",
     "CoaxialDriveComponent",
     "CoaxialAzimuthComponent",
@@ -13,13 +14,14 @@ __all__ = [
 ]
 
 from abc import ABCMeta
+
 from wpiutil import Sendable
+
+from .camera import Camera
+from .motor import CoaxialAzimuthComponent, CoaxialDriveComponent
+from .sensor import AbsoluteEncoder, Gyro
+from .system import SwerveModule
 
 
 class SendableABCMeta(ABCMeta, type(Sendable)):
     pass
-
-
-from .motor import CoaxialDriveComponent, CoaxialAzimuthComponent
-from .sensor import Gyro, AbsoluteEncoder
-from .system import SwerveModule

@@ -4,6 +4,7 @@ creating their drive base.
 """
 
 __all__ = [
+    "Limelight",
     "NeutralMode",
     "TypicalDriveComponentParameters",
     "TypicalAzimuthComponentParameters",
@@ -22,6 +23,7 @@ __all__ = [
     "DummyGyro",
 ]
 
+from .camera import Limelight
 from .motor import (
     Falcon500CoaxialAzimuthComponent,
     Falcon500CoaxialDriveComponent,

@@ -1,4 +1,1 @@
-# Initialize the unit registry before importing anything that relies on it
-from pint import UnitRegistry
-
-u = UnitRegistry()
+"""Implementations for all hardware components on the robot outside of entire components"""
