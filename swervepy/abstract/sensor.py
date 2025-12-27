@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from ntcore import NetworkTableInstance
 from wpimath.geometry import Rotation2d
@@ -50,7 +50,7 @@ class Gyro(Sendable, metaclass=SendableABCMeta):
         self._heading_rad_pub.set(current_heading.radians())
 
 
-class AbsoluteEncoder(Sendable, metaclass=SendableABCMeta):
+class AbsoluteEncoder(Sendable, ABC, metaclass=SendableABCMeta):
     def __init__(self, name: str = "AbsoluteEncoder"):
         """
         Initialize the AbsoluteEncoder sensor.

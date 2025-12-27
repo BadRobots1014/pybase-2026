@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 
 from ntcore import NetworkTableInstance
 from wpimath.geometry import Rotation2d, Translation2d
@@ -8,7 +8,7 @@ from wpiutil import Sendable
 from . import SendableABCMeta
 
 
-class SwerveModule(Sendable, metaclass=SendableABCMeta):
+class SwerveModule(Sendable, ABC, metaclass=SendableABCMeta):
     placement: Translation2d
     name: str
     last_commanded_drive_velocity: float = 0
