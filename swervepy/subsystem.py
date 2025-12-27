@@ -11,6 +11,7 @@ import wpilib
 import wpilib.sysid
 import wpimath.estimator
 import wpimath.kinematics
+import wpiutil
 from commands2.sysid import SysIdRoutine
 from ntcore import NetworkTableInstance
 from pathplannerlib.auto import AutoBuilder
@@ -19,6 +20,7 @@ from pathplannerlib.controller import PPHolonomicDriveController
 from pint import Quantity
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
+from wpiutil import SendableRegistry
 
 from vision.abstract import Camera
 
@@ -111,7 +113,7 @@ class SwerveDrive(commands2.Subsystem):
 
         # Field to plot auto trajectories and robot pose
         self.field = wpilib.Field2d()
-        wpilib.SmartDashboard.putData(self.field)
+        SendableRegistry.add(self.field, "Field2d")
 
         # Enable PathPlanner path Visualization. Causes artificats on sim screen, but looks great in elastic
         # PathPlannerLogging.setLogActivePathCallback(

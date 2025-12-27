@@ -2,7 +2,9 @@ from typing import Optional
 
 import commands2
 import wpilib
+from ntcore import NetworkTableInstance
 from pathplannerlib.auto import AutoBuilder
+from wpiutil import SendableRegistry
 
 from container import RobotContainer
 
@@ -20,12 +22,15 @@ class Robot(commands2.TimedCommandRobot):
         self.autonomous_command: Optional[commands2.Command] = None
         # Init dashboard values
         self.auto_chooser = AutoBuilder.buildAutoChooser("MasterAuto")
-        wpilib.SmartDashboard.putData("Auto Chooser", self.auto_chooser)
+        SendableRegistry.add(self.auto_chooser, "AutoChooser")
+
+        self.nt_inst =  NetworkTableInstance.getDefault()
+        self.match_time_pub = self.nt_inst.getFloatTopic("Match Info/Match Time").publish()
 
     # Runs every cycle no matter the state
     def robotPeriodic(self):
         match_time = wpilib.DriverStation.getMatchTime()
-        wpilib.SmartDashboard.putNumber("Match Info/Match Time", match_time)
+        self.match_time_pub.set(match_time)
 
     # Schedule Auto command when switched to "Auto"
     def autonomousInit(self) -> None:
