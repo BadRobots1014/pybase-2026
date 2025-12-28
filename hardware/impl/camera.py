@@ -68,22 +68,11 @@ class DummyCamera(Camera):
     def __init__(self, enabled: bool = True, name: str = "DummyCamera") -> None:
         super().__init__(enabled, name)
 
-        # nt_table and nt_instance defined in super
-        # setup subscriptions
-        # returns [x, y, x, roll, pitch, yaw, latency]
-        self.pose_sub = self.nt_table.getDoubleArrayTopic("botpose_wpiblue").subscribe(
-            [0] * 7
-        )
-        # tv = target valid
-        self.tv_sub = self.nt_table.getBooleanTopic("tv").subscribe(False)
-        # tc = tag count
-        self.tc_sub = self.nt_table.getIntegerTopic("tc").subscribe(0)
-
     def array_to_pose2d(self, arr: list[float]):
         return Pose2d(arr[0], arr[1], Rotation2d.fromDegrees(arr[5]))
 
     def vision_measurement_valid(self) -> bool:
-        return self.tv_sub.get() and self.enabled
+        return self.enabled
 
     # TODO: implement actual algorithm based on tag count, tag distance, and speed/rotation of robot
     # algorithm is used to tell the kalman filter how much to trust the pose estimation. lower is more confidant

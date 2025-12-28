@@ -13,7 +13,7 @@ class Camera(ABC):
 
         # setup network tables
         self.nt_inst = NetworkTableInstance.getDefault()
-        self.nt_table = self.nt_inst.getTable(f"Sensors/{name}")
+        self.nt_table = self.nt_inst.getTable(name)
 
         # setup enabled listener
         self.enabled_topic = self.nt_table.getBooleanTopic("enabled")
