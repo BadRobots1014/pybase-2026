@@ -17,11 +17,12 @@ from abc import ABCMeta
 
 from wpiutil import Sendable
 
+
+class SendableABCMeta(ABCMeta, type(Sendable)):
+    pass
+
+
 from .camera import Camera
 from .motor import CoaxialAzimuthComponent, CoaxialDriveComponent
 from .sensor import AbsoluteEncoder, Gyro
 from .system import SwerveModule
-
-
-class SendableABCMeta(ABCMeta, type(Sendable)):
-    pass

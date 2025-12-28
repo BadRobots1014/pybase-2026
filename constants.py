@@ -19,14 +19,10 @@ from collections import namedtuple
 
 import rev
 from pathplannerlib.path import PathConstraints
-from pint import UnitRegistry
 
+from __init__ import u
 from hardware.impl import Limelight
 from swervepy import TrajectoryFollowerParameters
-
-# Initialize the unit registry to provide consistent types
-u = UnitRegistry()
-
 
 # Physical constants
 phys_data = {
