@@ -15,10 +15,10 @@ if TYPE_CHECKING:
 
 def add_apriltags_to_field(field: Field2d):
     """
-    Add all 22 AprilTags to an existing Field2d object
+    Add AprilTags to an existing Field2d object.
 
     Args:
-        field: Your existing Field2d object (e.g., swerve.field)
+        field: existing Field2d object (e.g., swerve.field)
 
     Usage:
         add_apriltags_to_field(self.swerve.field)
@@ -49,7 +49,8 @@ def add_apriltags_to_field(field: Field2d):
         (22, 193.10, 130.17, 12.13, 300, 0),
     ]
 
-    # Add each tag to the field
+    # Convert all tags to poses
+    poses = []
     for tag_id, x_in, y_in, z_in, z_rot, y_rot in tags:
         # Convert inches to meters
         x_m = x_in * 0.0254
@@ -58,9 +59,12 @@ def add_apriltags_to_field(field: Field2d):
         # Convert rotation to radians
         rotation_rad = math.radians(z_rot)
 
-        # Create and add pose
+        # Create pose
         pose = Pose2d(x_m, y_m, Rotation2d(rotation_rad))
-        field.getObject(f"AprilTag_{tag_id}").setPose(pose)
+        poses.append(pose)
+
+    # Add all tags as a single object so they share the same icon
+    field.getObject("AprilTags").setPoses(poses)
 
 
 class PhysicsEngine(core.PhysicsEngine):
