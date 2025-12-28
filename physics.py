@@ -6,6 +6,7 @@ from wpilib import Field2d
 from wpimath.geometry import Pose2d, Rotation2d
 
 from hardware.impl import CoaxialSwerveModule, DummyGyro
+from hardware.impl.camera import DummyCamera
 from hardware.impl.motor import DummyCoaxialAzimuthComponent, DummyCoaxialDriveComponent
 
 # explicit importing causes errors, only needed for type checking
@@ -16,6 +17,9 @@ if TYPE_CHECKING:
 def add_apriltags_to_field(field: Field2d):
     """
     Add AprilTags to an existing Field2d object.
+
+    Note:
+        Update each season with new tags for accurate display
 
     Args:
         field: existing Field2d object (e.g., swerve.field)
@@ -83,7 +87,7 @@ class PhysicsEngine(core.PhysicsEngine):
             for module in self.swerve._modules
         )
         self.swerve._gyro = DummyGyro()
-        self.swerve._camera_list = []
+        self.swerve._camera_list = [DummyCamera()]
 
         add_apriltags_to_field(self.swerve.field)
 

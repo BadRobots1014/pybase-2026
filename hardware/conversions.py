@@ -15,3 +15,7 @@ def metres_to_rotations(distance: float, circumference: float) -> float:
 
 def rotations_to_metres(rotations: float, circumference: float) -> float:
     return rotations * circumference
+
+
+def inches_to_meters(inches: float) -> float:
+    return inches * 0.0254
