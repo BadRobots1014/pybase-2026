@@ -20,7 +20,7 @@ from pint import Quantity
 from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 from wpimath.kinematics import ChassisSpeeds, SwerveModulePosition, SwerveModuleState
 
-from __init__ import u
+from hardware import u
 from hardware.abstract import Camera
 
 if TYPE_CHECKING:

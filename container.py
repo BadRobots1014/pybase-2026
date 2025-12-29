@@ -5,7 +5,7 @@ from wpimath.geometry import Rotation2d, Translation2d
 
 import components
 from constants import ELEC, MECH, OP, PHYS, SW, VI
-from hardware.impl import CoaxialSwerveModule
+from hardware.impl import CoaxialSwerveModule, Limelight
 from swervepy import SwerveDrive
 
 logger = logging.getLogger("your.robot")
@@ -91,6 +91,9 @@ class RobotContainer:
             ),
         )
 
+        # list of camera objects to get poses from
+        camera_list = [Limelight()]
+
         self.stick = wpilib.Joystick(0)
 
         self.speed_limit_ratio = 1.0
@@ -121,7 +124,7 @@ class RobotContainer:
             OP.max_speed,
             OP.max_angular_velocity,
             SW.auto_follower_params,
-            VI.camera_list,
+            camera_list,
         )
 
         # Set the swerve subsystem's default command to teleoperate using

@@ -20,8 +20,7 @@ from collections import namedtuple
 import rev
 from pathplannerlib.path import PathConstraints
 
-from __init__ import u
-from hardware.impl import Limelight
+from hardware import u
 from swervepy import TrajectoryFollowerParameters
 
 # Physical constants
@@ -143,8 +142,15 @@ sw_data = {
 }
 SW = namedtuple("Data", sw_data.keys())(**sw_data)
 
-vi_data = {
-    # list of camera objects to get poses from
-    "camera_list": [Limelight()]
-}
+# Vision constants
+vi_data = {}
 VI = namedtuple("Data", vi_data.keys())(**vi_data)
+
+# Sim constants
+sim_data = {
+    # The size (meters) of the april tag specified by the FRC rulebook. Used in camera simulation.
+    "april_tag_physical_size": 6.5 * 0.0254,  # inches to meters
+    # The minimum visible pixels to properly detect a tag
+    "minimum_pixels_per_tag": 10,
+}
+SIM = namedtuple("Sim", sim_data.keys())(**sim_data)

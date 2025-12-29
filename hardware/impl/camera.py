@@ -1,12 +1,16 @@
-from typing import Tuple
+import math
+from typing import List, Tuple
 
-from wpilib import Timer
+from wpilib import Field2d, Timer
 from wpimath.geometry import Pose2d, Rotation2d
 
+from constants import SIM
 from hardware.abstract.camera import Camera
 
 
 class AprilTag:
+    pose: Pose2d
+
     def __init__(self, x: float, y: float, z: float, z_rotation: float):
         """
         Create an digital verison of an april tags.
@@ -17,10 +21,30 @@ class AprilTag:
         :param z: the z-offset in meters
         :param z_rotation: the rotation of the tag in degrees
         """
-        self.x = x
-        self.y = y
-        self.z = z
-        self.z_rotation = z_rotation
+        rotation_rad = math.radians(z_rotation)
+        self.pose = Pose2d(x, y, rotation_rad)
+
+
+class AprilTagManager:
+    """
+    Manager for digital representation of april tags on the field.
+    """
+
+    field: Field2d
+    tags: List[AprilTag]
+
+    def __init__(self, field: Field2d, tags: List[AprilTag]):
+        self.field = field
+        self.tags = tags
+
+        self._display_tags()
+
+    def _display_tags(self):
+        poses = []
+        for tag in self.tags:
+            poses.append(tag.pose)
+
+        self.field.getObject("AprilTags").setPoses(poses)
 
 
 class Limelight(Camera):
@@ -65,11 +89,43 @@ class Limelight(Camera):
 class DummyCamera(Camera):
     """A psuedo camera instance to use in physics sim"""
 
-    def __init__(self, enabled: bool = True, name: str = "DummyCamera") -> None:
+    def __init__(
+        self,
+        horizontal_fov: float,
+        horizontal_pixels: float,
+        fps: float,
+        latency: float,
+        enabled: bool = True,
+        name: str = "DummyCamera",
+    ) -> None:
+        """
+        Construct a camera for sim purposes. For most accuarte sim, refer to camera manual
+        and plug in the settings here.
+
+        :param horizontal_fov: Maximum fov in degrees
+        :param horizontal_pixels: The number of horizontal pixels per image
+        :param fps: The number of frames per second
+        :param latency: avg. expected latency of camera in ms
+        """
         super().__init__(enabled, name)
 
-    def array_to_pose2d(self, arr: list[float]):
-        return Pose2d(arr[0], arr[1], Rotation2d.fromDegrees(arr[5]))
+        self.horizontal_fov = horizontal_fov
+        self.horizontal_pixels = horizontal_pixels
+        self.fps = fps
+        self.latency = latency
+
+        # Compute focal length. It's essentially the phsyical size of each pixel.
+        self.focal_length = horizontal_pixels / (2 * math.tan(horizontal_fov / 2))
+
+        # compute the absolute maximum viewable distance.
+        self.max_distance = (
+            SIM.april_tag_physical_size * self.focal_length
+        ) / SIM.minimum_pixels_per_tag
+
+    def dynamic_max_distance(self) -> float:
+        """
+        The maximum viewable distance changes when the robot is moving.
+        """
 
     def vision_measurement_valid(self) -> bool:
         return self.enabled
@@ -82,10 +138,6 @@ class DummyCamera(Camera):
     def get_vision_measurement(
         self,
     ) -> tuple[Pose2d, float, tuple[float, float, float]]:
-        # get pose array
-        arr = self.pose_sub.get()
-
-        pose = self.array_to_pose2d(arr)
         # arr[6] is latency in ms, and is used to compute absolute timestamp of pose estimate
         timestamp = Timer.getFPGATimestamp() - (arr[6] / 1000.0)
         deviation = self.get_deviation()

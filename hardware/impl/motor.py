@@ -12,7 +12,7 @@ from pint import Quantity
 from wpimath.controller import SimpleMotorFeedforwardMeters
 from wpimath.geometry import Rotation2d
 
-from __init__ import u
+from hardware import u
 
 from .. import conversions
 from ..abstract.motor import CoaxialAzimuthComponent, CoaxialDriveComponent
