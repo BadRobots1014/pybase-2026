@@ -21,10 +21,15 @@ __all__ = [
     "SparkMaxEncoderType",
     "SparkMaxAbsoluteEncoder",
     "DummyGyro",
+    "DummyCoaxialDriveComponent",
+    "DummyCoaxialAzimuthComponent",
+    "DummyCamera",
 ]
 
-from .camera import Limelight
+from .camera import DummyCamera, Limelight
 from .motor import (
+    DummyCoaxialAzimuthComponent,
+    DummyCoaxialDriveComponent,
     Falcon500CoaxialAzimuthComponent,
     Falcon500CoaxialDriveComponent,
     NEOCoaxialAzimuthComponent,

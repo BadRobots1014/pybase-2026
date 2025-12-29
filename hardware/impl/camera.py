@@ -1,130 +1,14 @@
 import math
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
-from wpilib import Field2d, Timer
+from wpilib import Timer
 from wpimath.geometry import Pose2d, Rotation2d
 
 from constants import SIM
 from hardware.abstract.camera import Camera
 
-
-class AprilTag:
-    pose: Pose2d
-
-    def __init__(self, x: float, y: float, z: float, z_rotation: float):
-        """
-        Create an digital verison of an april tags.
-        0,0 is bottom left of field. Refer to the Field2d image for reference.
-
-        :param x: the x-offset in meters
-        :param y: the y-offset in meters
-        :param z: the z-offset in meters
-        :param z_rotation: the rotation of the tag in degrees
-        """
-        rotation_rad = math.radians(z_rotation)
-        self.pose = Pose2d(x, y, rotation_rad)
-
-    def can_see_tag(
-        self,
-        robot_x: float,
-        robot_y: float,
-        robot_rotation: float,
-        max_dist: float,
-        horizontal_fov: float,
-    ) -> bool:
-        """
-        Check if an AprilTag is visible to the camera.
-
-        :param robot_x: Robot's x position in meters
-        :param robot_y: Robot's y position in meters
-        :param robot_rotation: Robot's heading in radians (0 = facing +X)
-        :param max_dist: maximum distance to be visible by robot
-        :param horizontal_fov: the fov of the camera in radians
-        :return: True if tag is visible
-        """
-        if max_dist <= 0:
-            # Moving too fast for detection
-            return False
-
-        # Distance check
-        dx = self.pose.X() - robot_x
-        dy = self.pose.Y() - robot_y
-        distance = math.sqrt(dx**2 + dy**2)
-
-        if distance > max_dist:
-            return False
-
-        # FOV check
-        angle_to_tag = math.atan2(dy, dx)
-        relative_angle = self._normalize_angle(angle_to_tag - robot_rotation)
-
-        half_fov = horizontal_fov / 2
-        if abs(relative_angle) > half_fov:
-            return False
-
-        # Tag orientation check
-        tag_to_camera_angle = math.atan2(-dy, -dx)
-        tag_rotation = self.pose.rotation().radians()
-        angle_diff = self._normalize_angle(tag_to_camera_angle - tag_rotation)
-
-        max_viewing_angle = SIM.max_tag_viewing_angle_rad
-        if abs(angle_diff) > max_viewing_angle:
-            return False
-
-        return True
-
-    @staticmethod
-    def _normalize_angle(angle: float) -> float:
-        """Normalize angle to [-pi, pi]"""
-        return math.atan2(math.sin(angle), math.cos(angle))
-
-
-class AprilTagManager:
-    """
-    Manager for digital representation of april tags on the field.
-    """
-
-    field: Field2d
-    tags: List[AprilTag]
-
-    def __init__(self, field: Field2d, tags: List[AprilTag]):
-        self.field = field
-        self.tags = tags
-
-        self._display_tags()
-
-    def _display_tags(self):
-        poses = []
-        for tag in self.tags:
-            poses.append(tag.pose)
-
-        self.field.getObject("AprilTags").setPoses(poses)
-
-    def get_visible_tags(
-        self,
-        robot_x: float,
-        robot_y: float,
-        robot_rotation: float,
-        max_dist: float,
-        horizontal_fov: float,
-    ) -> List[AprilTag]:
-        """
-        Get all visible AprilTags given current robot state.
-
-        Returns list of tags that pass all visibility checks.
-        """
-        if max_dist <= 0:
-            # Moving too fast for detection
-            return []
-
-        visible_tags = []
-        for tag in self.tags:
-            if tag.can_see_tag(
-                robot_x, robot_y, robot_rotation, max_dist, horizontal_fov
-            ):
-                visible_tags.append(tag)
-
-        return visible_tags
+if TYPE_CHECKING:
+    from physics import AprilTag, AprilTagManager
 
 
 class Limelight(Camera):
@@ -174,7 +58,7 @@ class DummyCamera(Camera):
         horizontal_pixels: float,
         frame_rate: float,
         latency: float,
-        tag_manager: AprilTagManager,
+        tag_manager: "AprilTagManager",
         is_rolling_shutter: bool = False,
         enabled: bool = True,
         name: str = "DummyCamera",
@@ -375,7 +259,7 @@ class DummyCamera(Camera):
         return has_target
 
     def get_deviation(
-        self, visible_tags: List[AprilTag], robot_pose: Pose2d
+        self, visible_tags: List["AprilTag"], robot_pose: Pose2d
     ) -> Tuple[float, float, float]:
         """
         Calculate standard deviation based on visible tags and distance.
