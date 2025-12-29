@@ -155,11 +155,13 @@ sim_data = {
     # AprilTag specifications (FRC standard)
     "april_tag_physical_size": 6.5
     * 0.0254,  # 6.5 inches in meters (outer black square)
-    # Camera detection thresholds
-    "minimum_pixels_per_tag": 10,  # Minimum tag size for reliable detection
-    "pixel_threshold": 0.5,  # Maximum motion blur per frame before detection fails (pixels)
-    # Rolling shutter distortion limits
-    "max_pixel_skew": 2.0,  # Maximum geometric skew across tag from rolling shutter (pixels)
+    # Camera detection resolution limits
+    "minimum_pixels_per_tag": 10,  # Minimum tag size for reliable detection at distance
+    # Motion penalty constants (higher = detection range drops faster with speed)
+    "motion_blur_constant": 1.5,  # Meters of range lost per 1 m/s of linear velocity
+    "angular_blur_constant": 2.0,  # Meters of range lost per 1 rad/s of angular velocity
+    "rolling_shutter_penalty": 1.0,  # Additional range penalty for rolling shutter cameras during linear motion
+    # Rolling shutter hard distortion limits
     "max_angular_distortion_rad": 0.17,  # Maximum rotation during readout (~10°) before detection fails
     # Tag visibility constraints
     "max_tag_viewing_angle_rad": 1.047,  # Maximum off-axis angle to see tag (~60°, ±60° cone)
@@ -170,7 +172,7 @@ sim_data = {
     "camera_latency_ms": 35.0,  # Average processing + network latency (milliseconds)
     "camera_is_rolling_shutter": True,  # True for rolling shutter, False for global shutter
     # Vision measurement uncertainty (for Kalman filter)
-    "vision_base_std_dev": 0.7,  # Base standard deviation for pose estimates (meters/radians)
+    "vision_base_std_dev": 0.05,  # Base standard deviation (meters) at 0 distance/perfect conditions
     "vision_multi_tag_improvement": True,  # Whether multiple tags improve confidence
 }
 SIM = namedtuple("Sim", sim_data.keys())(**sim_data)

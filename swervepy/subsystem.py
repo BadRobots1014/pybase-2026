@@ -445,6 +445,10 @@ class _TeleOpCommand(commands2.Command):
         ).publish()
         self._open_loop_pub = self._table.getBooleanTopic("Open Loop").publish()
 
+        # Update command references
+        self._field_relative_pub.set(self.field_relative)
+        self._open_loop_pub.set(self.open_loop)
+
     def execute(self):
         self._swerve.drive(
             Translation2d(self.translation(), self.strafe())
@@ -453,10 +457,6 @@ class _TeleOpCommand(commands2.Command):
             self.field_relative,
             self.open_loop,
         )
-
-        # Update command telemetry
-        self._field_relative_pub.set(self.field_relative)
-        self._open_loop_pub.set(self.open_loop)
 
     def toggle_field_relative(self):
         self.field_relative = not self.field_relative
