@@ -148,9 +148,15 @@ VI = namedtuple("Data", vi_data.keys())(**vi_data)
 
 # Sim constants
 sim_data = {
-    # The size (meters) of the april tag specified by the FRC rulebook. Used in camera simulation.
-    "april_tag_physical_size": 6.5 * 0.0254,  # inches to meters
-    # The minimum visible pixels to properly detect a tag
+    # The size (meters) of the april tag specified by the FRC rulebook
+    "april_tag_physical_size": 6.5 * 0.0254,
+    # minimum pixels for detection
     "minimum_pixels_per_tag": 10,
+    # max motion blur per frame (pixels)
+    "pixel_threshold": 0.5,
+    # max rolling shutter skew (pixels)
+    "max_pixel_skew": 2,
+    # ~10 degrees max rotation during readout
+    "max_angular_distortion_rad": 0.17,
 }
 SIM = namedtuple("Sim", sim_data.keys())(**sim_data)

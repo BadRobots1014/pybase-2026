@@ -1,6 +1,7 @@
 import math
 from typing import List, Tuple
 
+from hal.simulation import setDIOValue
 from wpilib import Field2d, Timer
 from wpimath.geometry import Pose2d, Rotation2d
 
@@ -93,8 +94,9 @@ class DummyCamera(Camera):
         self,
         horizontal_fov: float,
         horizontal_pixels: float,
-        fps: float,
+        frame_rate: float,
         latency: float,
+        is_rolling_shutter: bool = False,
         enabled: bool = True,
         name: str = "DummyCamera",
     ) -> None:
@@ -104,28 +106,67 @@ class DummyCamera(Camera):
 
         :param horizontal_fov: Maximum fov in degrees
         :param horizontal_pixels: The number of horizontal pixels per image
-        :param fps: The number of frames per second
+        :param frame_rate: The number of frames per second
         :param latency: avg. expected latency of camera in ms
+        :param is_rolling_shutter: Whether to simulate a rolling shutter
         """
         super().__init__(enabled, name)
 
         self.horizontal_fov = horizontal_fov
         self.horizontal_pixels = horizontal_pixels
-        self.fps = fps
+        self.frame_rate = frame_rate
         self.latency = latency
+        self.is_rolling_shutter = is_rolling_shutter
 
         # Compute focal length. It's essentially the phsyical size of each pixel.
         self.focal_length = horizontal_pixels / (2 * math.tan(horizontal_fov / 2))
 
         # compute the absolute maximum viewable distance.
-        self.max_distance = (
+        self.absolute_max_distance = (
             SIM.april_tag_physical_size * self.focal_length
         ) / SIM.minimum_pixels_per_tag
 
-    def dynamic_max_distance(self) -> float:
+    def dynamic_max_distance(
+        self, linear_velocity: float, angular_velocity: float
+    ) -> float:
         """
-        The maximum viewable distance changes when the robot is moving.
+        Calculate maximum viewable distance accounting for motion blur and rolling shutter.
+
+        Returns 0.0 if motion constraints make detection impossible.
         """
+        # don't waste time computing if not moving
+        if linear_velocity == 0 and angular_velocity == 0:
+            return self.absolute_max_distance
+
+        # Rolling shutter hard angular constraint (distance-independent)
+        if self.is_rolling_shutter:
+            readout_time = 1.0 / self.frame_rate
+            angular_distortion = angular_velocity * readout_time
+
+            if angular_distortion > SIM.max_angular_distortion_rad:
+                # Rotating too fast for rolling shutter detection
+                return 0.0
+
+        # Motion blur constraint (applies to both shutter types)
+        tag_edge_velocity = (
+            linear_velocity + angular_velocity * SIM.april_tag_physical_size / 2
+        )
+        dynamic_max_blur = (tag_edge_velocity * self.focal_length) / (
+            SIM.pixel_threshold * self.frame_rate
+        )
+
+        # Rolling shutter geometric distortion
+        if self.is_rolling_shutter:
+            dynamic_max_geometric = (linear_velocity * self.focal_length) / (
+                SIM.max_pixel_skew * self.frame_rate
+            )
+
+            dynamic_max = min(dynamic_max_blur, dynamic_max_geometric)
+        else:
+            dynamic_max = dynamic_max_blur
+
+        # Can never exceed resolution limit
+        return min(dynamic_max, self.absolute_max_distance)
 
     def vision_measurement_valid(self) -> bool:
         return self.enabled
