@@ -321,6 +321,9 @@ class DummyCamera(Camera):
         for hist_time, hist_pose in reversed(self._pose_history):
             if hist_time <= timestamp:
                 latent_pose = hist_pose
+
+                # When a latent pose is found, the timestamp of the recorded pos should be used, not current.
+                timestamp = hist_time
                 break
 
         # Get visible tags from the perspective of the latent pose

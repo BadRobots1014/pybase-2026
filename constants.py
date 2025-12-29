@@ -172,7 +172,7 @@ sim_data = {
     "camera_latency_ms": 35.0,  # Average processing + network latency (milliseconds)
     "camera_is_rolling_shutter": True,  # True for rolling shutter, False for global shutter
     # Vision measurement uncertainty (for Kalman filter)
-    "vision_base_std_dev": 0.05,  # Base standard deviation (meters) at 0 distance/perfect conditions
+    "vision_base_std_dev": 0.25,  # Base standard deviation (meters) at 0 distance/perfect conditions
     "vision_multi_tag_improvement": True,  # Whether multiple tags improve confidence
 }
 SIM = namedtuple("Sim", sim_data.keys())(**sim_data)

@@ -242,16 +242,5 @@ class PhysicsEngine(core.PhysicsEngine):
     def update_sim(self, now, tm_diff):
         """
         Update the simulation state based on the robot's current state.
-
-        This prevents rubberbanding by continuously telling the physics controller
-        where the robot thinks it is based on odometry.
         """
-        # Get the current pose from swerve odometry
-        current_pose = self.swerve.pose
-
-        # Update the physics controller with the current pose
-        # This is what prevents rubberbanding - the physics controller needs to know
-        # where your odometry thinks the robot is
-        self.physics_controller.field.setRobotPose(current_pose)
-
         return
