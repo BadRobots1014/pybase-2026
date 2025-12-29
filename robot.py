@@ -4,7 +4,6 @@ import commands2
 import wpilib
 from ntcore import NetworkTableInstance
 from pathplannerlib.auto import AutoBuilder
-from wpiutil import SendableRegistry
 
 from container import RobotContainer
 

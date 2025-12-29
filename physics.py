@@ -1,12 +1,12 @@
-import math
 from typing import TYPE_CHECKING
 
 from pyfrc.physics import core
 from wpilib import Field2d
 from wpimath.geometry import Pose2d, Rotation2d
 
+from constants import SIM
 from hardware.impl import CoaxialSwerveModule, DummyGyro
-from hardware.impl.camera import DummyCamera
+from hardware.impl.camera import AprilTag, AprilTagManager, DummyCamera
 from hardware.impl.motor import DummyCoaxialAzimuthComponent, DummyCoaxialDriveComponent
 
 # explicit importing causes errors, only needed for type checking
@@ -14,21 +14,21 @@ if TYPE_CHECKING:
     from robot import Robot
 
 
-def add_apriltags_to_field(field: Field2d):
+def create_apriltag_manager(field: Field2d) -> AprilTagManager:
     """
-    Add AprilTags to an existing Field2d object.
+    Create AprilTagManager with all field tags.
 
     Note:
-        Update each season with new tags for accurate display
+        Update each season with new tags for accurate simulation
 
     Args:
         field: existing Field2d object (e.g., swerve.field)
 
-    Usage:
-        add_apriltags_to_field(self.swerve.field)
+    Returns:
+        AprilTagManager instance with all tags
     """
     # AprilTag data: ID, X, Y, Z, Z-Rotation, Y-Rotation (in inches and degrees)
-    tags = [
+    tag_data = [
         (1, 657.37, 25.80, 58.50, 126, 0),
         (2, 657.37, 291.20, 58.50, 234, 0),
         (3, 455.15, 317.15, 51.25, 270, 0),
@@ -53,22 +53,20 @@ def add_apriltags_to_field(field: Field2d):
         (22, 193.10, 130.17, 12.13, 300, 0),
     ]
 
-    # Convert all tags to poses
-    poses = []
-    for tag_id, x_in, y_in, z_in, z_rot, y_rot in tags:
+    # Create AprilTag objects
+    tags = []
+    for tag_id, x_in, y_in, z_in, z_rot, y_rot in tag_data:
         # Convert inches to meters
         x_m = x_in * 0.0254
         y_m = y_in * 0.0254
+        z_m = z_in * 0.0254
 
-        # Convert rotation to radians
-        rotation_rad = math.radians(z_rot)
+        # Create AprilTag (z_rotation in degrees will be converted to radians internally)
+        tag = AprilTag(x_m, y_m, z_m, z_rot)
+        tags.append(tag)
 
-        # Create pose
-        pose = Pose2d(x_m, y_m, Rotation2d(rotation_rad))
-        poses.append(pose)
-
-    # Add all tags as a single object so they share the same icon
-    field.getObject("AprilTags").setPoses(poses)
+    # Create and return manager (it will handle displaying tags on field)
+    return AprilTagManager(field, tags)
 
 
 class PhysicsEngine(core.PhysicsEngine):
@@ -77,6 +75,7 @@ class PhysicsEngine(core.PhysicsEngine):
 
         # Switch all physical components to dummy versions
         self.swerve = robot.container.swerve
+
         self.swerve._modules = tuple(
             CoaxialSwerveModule(
                 drive=DummyCoaxialDriveComponent(),
@@ -86,12 +85,49 @@ class PhysicsEngine(core.PhysicsEngine):
             )
             for module in self.swerve._modules
         )
-        self.swerve._gyro = DummyGyro()
-        self.swerve._camera_list = [DummyCamera()]
 
-        add_apriltags_to_field(self.swerve.field)
+        self.swerve._gyro = DummyGyro()
+
+        # Create AprilTag manager for the field
+        self.tag_manager = create_apriltag_manager(self.swerve.field)
+
+        # Initialize DummyCamera with proper parameters
+        self.swerve._camera_list = [
+            DummyCamera(
+                horizontal_fov=SIM.camera_horizontal_fov_deg,
+                horizontal_pixels=SIM.camera_horizontal_pixels,
+                frame_rate=SIM.camera_frame_rate,
+                latency=SIM.camera_latency_ms,
+                tag_manager=self.tag_manager,
+                is_rolling_shutter=SIM.camera_is_rolling_shutter,
+                enabled=True,
+                name="sim_camera",
+            )
+        ]
+
+        # Set initial robot position
+        initial_pose = Pose2d(
+            SIM.initial_x,
+            SIM.initial_y,
+            Rotation2d.fromDegrees(SIM.initial_heading_deg),
+        )
+        self.swerve.reset_odometry(initial_pose)
 
         return
 
     def update_sim(self, now, tm_diff):
+        """
+        Update the simulation state based on the robot's current state.
+
+        This prevents rubberbanding by continuously telling the physics controller
+        where the robot thinks it is based on odometry.
+        """
+        # Get the current pose from swerve odometry
+        current_pose = self.swerve.pose
+
+        # Update the physics controller with the current pose
+        # This is what prevents rubberbanding - the physics controller needs to know
+        # where your odometry thinks the robot is
+        self.physics_controller.field.setRobotPose(current_pose)
+
         return

@@ -76,7 +76,7 @@ class SwerveDrive(commands2.Subsystem):
         self._nt_inst = NetworkTableInstance.getDefault()
         self._table = self._nt_inst.getTable("Swerve")
 
-        # Create publishers for drivetrain telemetry
+        # Create publishers for drivetrain telemetry.
         self._robot_x_pub = self._table.getDoubleTopic("Robot X (m)").publish()
         self._robot_y_pub = self._table.getDoubleTopic("Robot Y (m)").publish()
         self._robot_heading_deg_pub = self._table.getDoubleTopic(
@@ -92,7 +92,6 @@ class SwerveDrive(commands2.Subsystem):
         ).publish()
 
         # Pause init for a second before setting module offsets to avoid a bug related to inverting motors.
-        # Fixes https://github.com/Team364/BaseFalconSwerve/issues/8.
         time.sleep(1)
         for module in self._modules:
             module.reset()
@@ -184,6 +183,22 @@ class SwerveDrive(commands2.Subsystem):
         angular_velocity = self._kinematics.toChassisSpeeds(self.module_states).omega
         # Update the gyro heading reading with the change in heading since the last timestep
         self._gyro.simulation_periodic(angular_velocity * self.period_seconds)
+
+        # Update camera state for simulation
+        speeds = self.robot_relative_speeds
+        current_pose = self._odometry.getEstimatedPosition()
+
+        for cam in self._camera_list:
+            # Pass current state to DummyCamera instances (avoids circular import)
+            if hasattr(cam, "update_robot_state"):
+                cam.update_robot_state(  # type: ignore[attr-defined]
+                    current_pose.X(),
+                    current_pose.Y(),
+                    current_pose.rotation().radians(),
+                    speeds.vx,
+                    speeds.vy,
+                    speeds.omega,
+                )
 
     @singledispatchmethod
     def drive(

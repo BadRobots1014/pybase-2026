@@ -146,17 +146,31 @@ SW = namedtuple("Data", sw_data.keys())(**sw_data)
 vi_data = {}
 VI = namedtuple("Data", vi_data.keys())(**vi_data)
 
-# Sim constants
+# Simulation constants
 sim_data = {
-    # The size (meters) of the april tag specified by the FRC rulebook
-    "april_tag_physical_size": 6.5 * 0.0254,
-    # minimum pixels for detection
-    "minimum_pixels_per_tag": 10,
-    # max motion blur per frame (pixels)
-    "pixel_threshold": 0.5,
-    # max rolling shutter skew (pixels)
-    "max_pixel_skew": 2,
-    # ~10 degrees max rotation during readout
-    "max_angular_distortion_rad": 0.17,
+    # Initial robot position for simulation
+    "initial_x": 2.0,  # meters from left edge of field
+    "initial_y": 4.0,  # meters from bottom edge of field
+    "initial_heading_deg": 0.0,  # degrees (0 = facing +X/right)
+    # AprilTag specifications (FRC standard)
+    "april_tag_physical_size": 6.5
+    * 0.0254,  # 6.5 inches in meters (outer black square)
+    # Camera detection thresholds
+    "minimum_pixels_per_tag": 10,  # Minimum tag size for reliable detection
+    "pixel_threshold": 0.5,  # Maximum motion blur per frame before detection fails (pixels)
+    # Rolling shutter distortion limits
+    "max_pixel_skew": 2.0,  # Maximum geometric skew across tag from rolling shutter (pixels)
+    "max_angular_distortion_rad": 0.17,  # Maximum rotation during readout (~10°) before detection fails
+    # Tag visibility constraints
+    "max_tag_viewing_angle_rad": 1.047,  # Maximum off-axis angle to see tag (~60°, ±60° cone)
+    # Camera simulation parameters (adjust to match your actual camera)
+    "camera_horizontal_fov_deg": 70.0,  # Camera horizontal field of view (degrees)
+    "camera_horizontal_pixels": 1280,  # Camera horizontal resolution (pixels)
+    "camera_frame_rate": 30.0,  # Camera frame rate (fps)
+    "camera_latency_ms": 35.0,  # Average processing + network latency (milliseconds)
+    "camera_is_rolling_shutter": True,  # True for rolling shutter, False for global shutter
+    # Vision measurement uncertainty (for Kalman filter)
+    "vision_base_std_dev": 0.7,  # Base standard deviation for pose estimates (meters/radians)
+    "vision_multi_tag_improvement": True,  # Whether multiple tags improve confidence
 }
 SIM = namedtuple("Sim", sim_data.keys())(**sim_data)
