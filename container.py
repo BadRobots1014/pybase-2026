@@ -1,10 +1,13 @@
 import logging
+import math
 
 import wpilib
-from wpimath.geometry import Rotation2d, Translation2d
+from commands2.button import JoystickButton
+from pathplannerlib.auto import AutoBuilder
+from wpimath.geometry import Pose2d, Rotation2d, Translation2d
 
 import components
-from constants import ELEC, MECH, OP, PHYS, SW, VI
+from constants import ELEC, OP, SW
 from hardware.impl import CoaxialSwerveModule, Limelight
 from swervepy import SwerveDrive
 
@@ -28,6 +31,7 @@ class RobotContainer:
         self.rb_enc = components.absolute_encoder_class(ELEC.RB_encoder_DIO)
         self.rf_enc = components.absolute_encoder_class(ELEC.RF_encoder_DIO)
 
+        # Swerve modules
         modules = (
             # Left Front module
             CoaxialSwerveModule(
@@ -94,6 +98,7 @@ class RobotContainer:
         # list of camera objects to get poses from
         camera_list = [Limelight()]
 
+        # The primary controller
         self.stick = wpilib.Joystick(0)
 
         self.speed_limit_ratio = 1.0
@@ -116,8 +121,7 @@ class RobotContainer:
                     OP.angular_velocity_limit / OP.max_angular_velocity
                 )
 
-        # Define a swerve drive subsystem by passing in a list of SwerveModules
-        # and some options
+        # Define a swerve drive subsystem
         self.swerve = SwerveDrive(
             modules,
             gyro,
@@ -138,6 +142,28 @@ class RobotContainer:
                 drive_open_loop=SW.drive_open_loop,
             )
         )
+
+        # Add button bindings
+        self.configureButtonBindings()
+
+    def configureButtonBindings(self) -> None:
+        """Button bindings -> Commands"""
+        # Define used buttons
+        stick_left_bumper = JoystickButton(self.stick, 5)
+        stick_right_bumper = JoystickButton(self.stick, 6)
+
+        # Map buttons to commands
+        stick_left_bumper.onTrue(
+            AutoBuilder.pathfindToPose(
+                Pose2d(1.2, 7, math.radians(130)), SW.auto_path_constraints
+            )
+        )
+        stick_right_bumper.onTrue(
+            AutoBuilder.pathfindToPose(
+                Pose2d(3.6, 5.5, math.radians(-60)), SW.auto_path_constraints
+            )
+        )
+        return
 
     @staticmethod
     def deadband(value, band):
