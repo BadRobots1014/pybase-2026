@@ -124,10 +124,10 @@ sw_data = {
     ),
     # auto_path_constraints: Auto pathing physical constraints so robot doesn't destroy itself
     "auto_path_constraints": PathConstraints(
-        4.5,
-        4.5,
-        11.5,
-        11.5,
+        OP.speed_limit,  # Max linear velocity
+        OP.max_speed,  # Max linear acceleration
+        OP.angular_velocity_limit,  # Max angular velocity
+        OP.max_angular_velocity,  # Max angular acceleration
     ),
     # Constants for PID control of the propulsion AND steering motors
     # (kP must be non-zero, or azimuth motors won't engage.)
