@@ -153,12 +153,12 @@ class RobotContainer:
         stick_right_bumper = JoystickButton(self.stick, 6)
 
         # Map buttons to commands
-        stick_left_bumper.onTrue(
+        stick_left_bumper.whileTrue(
             AutoBuilder.pathfindToPose(
                 Pose2d(1.2, 7, math.radians(130)), SW.auto_path_constraints
             )
         )
-        stick_right_bumper.onTrue(
+        stick_right_bumper.whileTrue(
             AutoBuilder.pathfindToPose(
                 Pose2d(3.6, 5.5, math.radians(-60)), SW.auto_path_constraints
             )
