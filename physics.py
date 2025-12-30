@@ -1,5 +1,5 @@
 import math
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Tuple
 
 from pyfrc.physics import core
 from wpilib import Field2d
@@ -35,14 +35,14 @@ class AprilTag:
         rotation_rad = math.radians(z_rotation)
         self.pose = Pose2d(x, y, rotation_rad)
 
-    def can_see_tag(
+    def get_visibility_and_distance(
         self,
         robot_x: float,
         robot_y: float,
         robot_rotation: float,
         max_dist: float,
         horizontal_fov: float,
-    ) -> bool:
+    ) -> Tuple[bool, float]:
         """
         Check if an AprilTag is visible to the camera.
 
@@ -54,35 +54,32 @@ class AprilTag:
         :return: True if tag is visible
         """
         if max_dist <= 0:
-            # Moving too fast for detection
-            return False
+            return False, 0.0
 
         # Distance check
         dx = self.pose.X() - robot_x
         dy = self.pose.Y() - robot_y
-        distance = math.sqrt(dx**2 + dy**2)
+        distance = math.hypot(dx, dy)
 
         if distance > max_dist:
-            return False
+            return False, distance
 
         # FOV check
         angle_to_tag = math.atan2(dy, dx)
         relative_angle = self._normalize_angle(angle_to_tag - robot_rotation)
 
-        half_fov = horizontal_fov / 2
-        if abs(relative_angle) > half_fov:
-            return False
+        if abs(relative_angle) > (horizontal_fov / 2):
+            return False, distance
 
-        # Tag orientation check
+        # orientation check (can the camera see the front of the tag?)
         tag_to_camera_angle = math.atan2(-dy, -dx)
         tag_rotation = self.pose.rotation().radians()
         angle_diff = self._normalize_angle(tag_to_camera_angle - tag_rotation)
 
-        max_viewing_angle = SIM.max_tag_viewing_angle_rad
-        if abs(angle_diff) > max_viewing_angle:
-            return False
+        if abs(angle_diff) > SIM.max_tag_viewing_angle_rad:
+            return False, distance
 
-        return True
+        return True, distance
 
     @staticmethod
     def _normalize_angle(angle: float) -> float:
@@ -124,18 +121,21 @@ class AprilTagManager:
 
         Returns list of tags that pass all visibility checks.
         """
-        if max_dist <= 0:
-            # Moving too fast for detection
-            return []
+        visible_pairs = []
 
-        visible_tags = []
         for tag in self.tags:
-            if tag.can_see_tag(
+            is_visible, dist = tag.get_visibility_and_distance(
                 robot_x, robot_y, robot_rotation, max_dist, horizontal_fov
-            ):
-                visible_tags.append(tag)
+            )
+            if is_visible:
+                # Store as a tuple (distance, tag) for easy sorting
+                visible_pairs.append((dist, tag))
 
-        return visible_tags
+        # Sort based on the first element of the tuple (the distance)
+        visible_pairs.sort(key=lambda x: x[0])
+
+        # Return only the AprilTag objects, stripped of the distance metadata
+        return [pair[1] for pair in visible_pairs]
 
 
 def create_apriltag_manager(field: Field2d) -> AprilTagManager:
