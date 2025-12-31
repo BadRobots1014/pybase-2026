@@ -18,10 +18,27 @@ This guide serves as a starting point for contributing to the robot code. Since 
 
 ### C. Clone the Repository
 
-1. For most it is recommended to use **Github Desktop**. If you don't have it installed, https://desktop.github.com/download/
-2. Click the green **Code** in the top right.
+In order to make changes, a local (on your machine) copy is needed.
+
+For most it is recommended to use **Github Desktop** to do this. If you don't have it installed, [https://desktop.github.com/download/](https://desktop.github.com/download/).
+This guide is provided for both Github Desktop and Git (w/ Github CLI).
+
+> [!TIP]
+> **Git** and **Github** are entirely seperate things. Git is version control software, Codebases on Github use git for version control. 
+
+#### Github Desktop
+
+<details>
+
+2. When you open a repo a github.com, you will see a green **Code** in the top right. Click it to open cloning options.
+
 3. Click **Open with Github Desktop**
+
 4. A prompt will appear in the app, simply click the Clone button.
+
+*Side Note: You can also use the repo browser in github desktop, but it's quite clunky.*
+
+</details>
 
 #### Terminal
 
@@ -45,9 +62,17 @@ gh repo clone BadRobots1014/pybase-2026
 
 A codebase has branches, which are (essentially) isolated versions of code that others can work on and see the work being done **without messing up everyone elses work**. With numerous people touching the code, we want to avoid disrupting everyones work when possible.
 
+### Github Desktop
+
+<details>
+
 1. In the top of github desktop you will see **Current Branch**
+
 2. Click the arrow to the right to open a dropdown of the existing branches
+
 3. If you were assigned a specific branch, select it here. If you were told to create a new one, you can do so from this menu.
+
+</details>
 
 #### Terminal
 
@@ -66,6 +91,9 @@ git switch -c <new_branch>
 ```
 
 </details>
+
+> [!IMPORTANT]
+> The **Main** or **Master** branch is the default branch, and source of truth of the entire codebase. In large projects it is **write-protected**, meaning you can not directly edit it.
 
 ### E. Access the code
 
@@ -279,3 +307,7 @@ git revert <commit-id>
 
 > [!WARNING] 
 > Reverting can be a "footgun" if the code has changed significantly since that commit was made, as it may cause merge conflicts. Use this carefully.
+
+### K. Pushing / Pulling changes
+
+When you commit changes, they are stored locally (only on your machine) and so only you can see them. You have to tell the server (*called the remote repository*) your changes so it can be sent to anyone accessing the repo.
