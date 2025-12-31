@@ -186,3 +186,96 @@ git commit -m "[title]"
 _Note: If you have modified existing files but haven't created new ones, you can combine these steps using `git commit -am "[title]"`, but `git add -A` is safer for beginners._
 
 </details>
+
+### J. Undoing changes
+
+At some point, you will need to undo a **previous commit**, a **changed file**, or **all work since the last commit**. This process is straightforward as long as you make it a habit to **commit often**.
+
+> [!NOTE] What is HEAD?
+> The HEAD is the most recent commit on your current branch. It updates automatically every time you commit. Think of it as a "You Are Here" marker on your timeline.
+> This is most relevant if you're using terminal commands.
+
+#### Discarding Changes (Resetting)
+
+Resetting is the most common way to undo work. It discards any changes made since the last commit, effectively acting like a "Ctrl+Z" for your entire project.
+
+#### GitHub Desktop
+
+<details>
+
+1. Go to the **History** tab (located above your recent changes).
+
+2. Right-click the most recent commit.
+
+3. Select **Reset to Commit**.
+
+</details>
+
+#### Terminal
+
+<details>
+
+To discard all uncommitted changes in your working directory:
+
+git reset --hard
+
+</details>
+
+#### Undoing the Last Commit
+
+If you committed too early or made a typo in your commit title, you can "undo" the commit. This removes the commit record but **keeps your code changes** as uncommitted work so you can keep editing.
+
+#### GitHub Desktop
+
+<details>
+
+Click the **Undo** button located immediately below the Commit button in the bottom left.
+
+</details>
+
+#### Terminal
+
+<details>
+
+To move the HEAD back one commit while keeping your changes in the text editor:
+
+git reset --soft HEAD~1
+
+</details>
+
+#### Reverting a Previous Commit
+
+Reverting creates a **new commit** that does the exact opposite of a previous commit. This is the safest way to undo work that has already been shared with others, as it does not delete history.
+
+#### GitHub Desktop
+
+<details>
+
+1. Go to the **History** tab.
+
+2. Right-click the specific commit you want to reverse.
+
+3. Click **Revert changes in commit**.
+
+</details>
+
+#### Terminal
+
+<details>
+
+1. Find the commit ID (a string of numbers and letters) by viewing the log:
+
+```bash
+Find the commit ID (a string of numbers and letters) by viewing the log:
+```
+
+2. Run the revert command:
+
+```bash
+git revert <commit-id>
+```
+
+</details>
+
+> [!WARNING] 
+> Reverting can be a "footgun" if the code has changed significantly since that commit was made, as it may cause merge conflicts. Use this carefully.
