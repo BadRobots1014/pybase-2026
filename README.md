@@ -191,9 +191,9 @@ _Note: If you have modified existing files but haven't created new ones, you can
 
 At some point, you will need to undo a **previous commit**, a **changed file**, or **all work since the last commit**. This process is straightforward as long as you make it a habit to **commit often**.
 
-> [!NOTE] What is HEAD?
+> [!NOTE]
 > The HEAD is the most recent commit on your current branch. It updates automatically every time you commit. Think of it as a "You Are Here" marker on your timeline.
-> This is most relevant if you're using terminal commands.
+> It is most relevant if you're using terminal commands.
 
 #### Discarding Changes (Resetting)
 
