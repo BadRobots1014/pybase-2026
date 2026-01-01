@@ -23,7 +23,7 @@ In order to make changes, a local (on your machine) copy is needed.
 For most it is recommended to use **Github Desktop** to do this. If you don't have it installed, [https://desktop.github.com/download/](https://desktop.github.com/download/).
 This guide is provided for both Github Desktop and Git (w/ Github CLI).
 
-> [!TIP]
+> [!NOTE]
 > **Git** and **Github** are entirely seperate things. Git is version control software, Codebases on Github use git for version control. 
 
 #### Github Desktop
@@ -308,6 +308,112 @@ git revert <commit-id>
 > [!WARNING] 
 > Reverting can be a "footgun" if the code has changed significantly since that commit was made, as it may cause merge conflicts. Use this carefully.
 
-### K. Pushing / Pulling changes
+### K. Syncing Changes (Pushing & Pulling)
 
-When you commit changes, they are stored locally (only on your machine) and so only you can see them. You have to tell the server (*called the remote repository*) your changes so it can be sent to anyone accessing the repo.
+When you commit changes, they are stored **locally** on your computer. To share your work with the team, you must send those changes to the server (the **remote repository**).
+Similarly, you must download changes made by others to keep your local code up to date.
+
+#### 1. Fetching and Pulling
+
+**Fetching** checks the server for any new changes without merging them into your code. **Pulling** actually downloads those changes and integrates them into your local branch.
+
+#### Github Desktop
+
+<details>
+
+1. In the top bar, to the right of the branch selector, you will see a button labeled `Fetch Origin`, `Pull Origin`, or `Push Origin`.
+
+2. If you see **Fetch Origin**, click it. GitHub will check the server for updates.
+
+3. If new changes are found, the button will change to **Pull Origin**. Click it to bring those changes into your local repository.
+
+4. If you see **Push Origin**, your local repository is already up to date with the server, and you have local commits ready to be sent up.
+
+</details>
+
+#### Terminal
+
+<details>
+
+To download and integrate changes from the remote repository, run:
+
+```bash
+git pull
+```
+
+</details>
+
+#### 2. Handling Merge Conflicts
+
+If you and another person edit the **same line** in the same file, Git won't know which version to keep. This results in a **merge conflict**. You must manually choose which code to preserve.
+
+#### Github Desktop
+
+<details>
+
+GitHub Desktop provides a clear interface when a conflict occurs. A notification bar will appear for each conflicted file, allowing you to choose whether to:
+
+- Keep Your Changes (Local)
+
+- Keep Their Changes (Remote)
+
+- Keep Both (Rarely used, but merges both versions together)
+
+</details>
+
+#### Terminal
+
+<details>
+
+If `git pull results` in a conflict, Git will mark the affected files. Open the file in your code editor (like VS Code). You will see markers like this:
+
+```
+<<<<<<< HEAD
+(Your local changes)
+=======
+(Changes from the server/remote)
+>>>>>>> BRANCH-NAME
+```
+
+To resolve the conflict:
+
+1. Delete the code you don't want to keep.
+
+2. Remove the <<<<<<<, =======, and >>>>>>> markers.
+
+3. Save the file and commit the resolution.
+
+*Note: In VS Code and similar editors, buttons like "Accept Current Change" or "Accept Incoming Change" will appear above these markers to handle this automatically.*
+
+</details>
+
+#### 3. Pushing Changes
+
+Once your local changes are committed and your repository is synced with the latest updates from others, you need to **push** your work to the server.
+
+#### Github Desktop
+
+<details>
+
+1. Click Push Origin in the top bar.
+
+2. If the button says Fetch Origin, click it first to ensure there are no remote changes you missed.
+
+3. If a conflict occurs during the push, refer to the "Merge Conflicts" section above.
+
+</details>
+
+#### Terminal
+
+<details>
+
+To send your committed changes to the server, run:
+
+```bash
+git push
+```
+
+</details>
+
+> [!IMPORTANT]
+> Always **pull** before you **push**. Both Github Desktop and Git will warn you when you push, but when working with a team it is a good habit to have.
