@@ -365,7 +365,7 @@ GitHub Desktop provides a clear interface when a conflict occurs. A notification
 
 <details>
 
-If `git pull results` in a conflict, Git will mark the affected files. Open the file in your code editor (like VS Code). You will see markers like this:
+If `git pull` results in a conflict, Git will mark the affected files. Open the file in your code editor (like VS Code). You will see markers like this:
 
 ```
 <<<<<<< HEAD
