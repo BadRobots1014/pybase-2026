@@ -6,24 +6,23 @@
 [tool.robotpy]
 
 # Version of robotpy this project depends on
-robotpy_version = "2025.3.2.2"
+robotpy_version = "2026.1.1"
 
 # Which extra RobotPy components should be installed
 # -> equivalent to `pip install robotpy[extra1, ...]
-robotpy_extras = [
+components = [
     # "all",
      "apriltag",
      "commands2",
-    # "cscore",
-     "navx",
-     "pathplannerlib",
-     "phoenix5",
-     "phoenix6",
-     "rev",
-    # "romi",
      "sim",
-    # "xrp",
 ]
 
 # Other pip packages to install
-requires = ["pint"]
+requires = [
+     "pint",
+     "robotpy-navx==2026.0.0b1",
+     "robotpy-pathplannerlib",
+     "phoenix6",
+     "phoenix5",
+     "robotpy-rev"
+]

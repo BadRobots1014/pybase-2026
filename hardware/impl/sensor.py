@@ -1,7 +1,6 @@
 import enum
 import math
 
-import phoenix5.sensors
 import phoenix6.hardware
 import rev
 import wpilib
@@ -60,6 +59,8 @@ class AbsoluteDutyCycleEncoder(AbsoluteEncoder):
         self._encoder.setPositionOffset(0)
 
 
+""" old pigeon 1 from phoenix 5
+
 class PigeonGyro(Gyro):
     def __init__(self, id_: int, invert: bool = False):
         super().__init__(f"Pigeon_{id_}")
@@ -81,7 +82,7 @@ class PigeonGyro(Gyro):
         if self.invert:
             yaw = 360 - yaw
         return Rotation2d.fromDegrees(yaw)
-
+"""
 
 class Pigeon2Gyro(Gyro):
     def __init__(self, id_: int | tuple[int, str], invert: bool = False):

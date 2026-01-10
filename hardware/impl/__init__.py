@@ -43,7 +43,7 @@ from .sensor import (
     AbsoluteDutyCycleEncoder,
     DummyGyro,
     Pigeon2Gyro,
-    PigeonGyro,
+    #PigeonGyro,
     SparkMaxAbsoluteEncoder,
     SparkMaxEncoderType,
 )

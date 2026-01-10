@@ -110,9 +110,9 @@ class Falcon500CoaxialDriveComponent(CoaxialDriveComponent):
 
         self._motor_sim = self._motor.sim_state
         self._motor_sim.orientation = (
-            phoenix6.sim.ChassisReference.Clockwise_Positive
+            phoenix6.sim.ChassisReference.CLOCKWISE_POSITIVE
             if parameters.invert_motor
-            else phoenix6.sim.ChassisReference.CounterClockwise_Positive
+            else phoenix6.sim.ChassisReference.COUNTER_CLOCKWISE_POSITIVE
         )
 
         self._duty_cycle_request = phoenix6.controls.DutyCycleOut(0)
@@ -236,9 +236,9 @@ class Falcon500CoaxialAzimuthComponent(CoaxialAzimuthComponent):
 
         self._motor_sim = self._motor.sim_state
         self._motor_sim.orientation = (
-            phoenix6.sim.ChassisReference.Clockwise_Positive
+            phoenix6.sim.ChassisReference.CLOCKWISE_POSITIVE
             if parameters.invert_motor
-            else phoenix6.sim.ChassisReference.CounterClockwise_Positive
+            else phoenix6.sim.ChassisReference.COUNTER_CLOCKWISE_POSITIVE
         )
 
         self._position_request = phoenix6.controls.PositionVoltage(0)
@@ -342,8 +342,8 @@ class NEOCoaxialDriveComponent(CoaxialDriveComponent):
 
         self._motor.configure(
             settings,
-            rev.SparkMax.ResetMode.kResetSafeParameters,
-            rev.SparkMax.PersistMode.kPersistParameters,
+            rev.ResetMode.kResetSafeParameters,
+            rev.PersistMode.kPersistParameters,
         )
 
     def follow_velocity_open(self, velocity: float):
@@ -440,8 +440,8 @@ class NEOCoaxialAzimuthComponent(CoaxialAzimuthComponent):
 
         self._motor.configure(
             settings,
-            rev.SparkMax.ResetMode.kResetSafeParameters,
-            rev.SparkMax.PersistMode.kPersistParameters,
+            rev.ResetMode.kResetSafeParameters,
+            rev.PersistMode.kPersistParameters,
         )
 
     def follow_angle(self, angle: Rotation2d):
