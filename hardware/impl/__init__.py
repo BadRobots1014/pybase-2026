@@ -24,6 +24,7 @@ __all__ = [
     "DummyCoaxialDriveComponent",
     "DummyCoaxialAzimuthComponent",
     "DummyCamera",
+    "NavX2Gyro"
 ]
 
 from .camera import DummyCamera, Limelight
@@ -44,6 +45,7 @@ from .sensor import (
     DummyGyro,
     Pigeon2Gyro,
     #PigeonGyro,
+    NavX2Gyro,
     SparkMaxAbsoluteEncoder,
     SparkMaxEncoderType,
 )

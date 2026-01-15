@@ -21,7 +21,7 @@ import rev
 from pathplannerlib.path import PathConstraints
 
 from hardware import u
-from hardware.impl import NEOCoaxialDriveComponent, NEOCoaxialAzimuthComponent, DummyGyro, AbsoluteCANCoder
+from hardware.impl import NEOCoaxialDriveComponent, NEOCoaxialAzimuthComponent, NavX2Gyro, AbsoluteCANCoder
 from swervepy import TrajectoryFollowerParameters
 
 class NeoBot:
@@ -72,7 +72,7 @@ class NeoBot:
 
         "drive_component_class": NEOCoaxialDriveComponent,
         "azimuth_component_class": NEOCoaxialAzimuthComponent,
-        "gyro_component_class": DummyGyro,  # Todo: NEEDS TO BE NAVX2
+        "gyro_component_class": NavX2Gyro, 
         "absolute_encoder_class": AbsoluteCANCoder,
     }
     ELEC = namedtuple("Data", elec_data.keys())(**elec_data)
