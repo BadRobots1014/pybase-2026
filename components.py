@@ -7,22 +7,14 @@ all that here instead of in the container.py module.
 """
 
 from constants import ELEC, MECH, OP, PHYS, SW
-from hardware.impl import (
-    # Replace these classes with the ones that apply to your robot
-    AbsoluteCANCoder,
-    DummyGyro,
-    NEOCoaxialAzimuthComponent,
-    NEOCoaxialDriveComponent,
-    TypicalAzimuthComponentParameters,
-    TypicalDriveComponentParameters,
-)
+from hardware.impl import TypicalDriveComponentParameters, TypicalAzimuthComponentParameters
 
 # Define which components you're using (e.g. which motors you're using)
 #
-drive_component_class = NEOCoaxialDriveComponent
-azimuth_component_class = NEOCoaxialAzimuthComponent
-gyro_component_class = DummyGyro
-absolute_encoder_class = AbsoluteCANCoder
+drive_component_class = ELEC.drive_component_class
+azimuth_component_class = ELEC.azimuth_component_class
+gyro_component_class = ELEC.gyro_component_class
+absolute_encoder_class = ELEC.absolute_encoder_class
 
 # For the drive/azimuth classes selected, set the parameters which DO NOT vary
 # between the modules.  (Look at the Parameters data class for the

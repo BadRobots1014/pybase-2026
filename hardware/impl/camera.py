@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING, List, Tuple
 from wpilib import Timer
 from wpimath.geometry import Pose2d, Rotation2d
 
-from constants import SIM
 from hardware.abstract.camera import Camera
 
 if TYPE_CHECKING:
     from physics import AprilTag, AprilTagManager
+    from constants import SIM
 
 
 class Limelight(Camera):
