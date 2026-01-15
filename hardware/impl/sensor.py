@@ -1,10 +1,12 @@
 import enum
 import math
 
+import navx
 import phoenix6.hardware
 import rev
 import wpilib
 from wpimath.geometry import Rotation2d
+from navx import Navx
 
 from ..abstract.sensor import AbsoluteEncoder, Gyro
 
@@ -110,6 +112,30 @@ class Pigeon2Gyro(Gyro):
     @property
     def heading(self) -> Rotation2d:
         yaw = self._yaw_signal.refresh().value
+        if self.invert:
+            yaw = 360 - yaw
+        return Rotation2d.fromDegrees(yaw)
+
+
+class NavX2Gyro(Gyro):
+
+    def __init__(self, id_: int | tuple[int, str], invert: bool = False):
+        # Initialize parent with a descriptive name
+        super().__init__("Nav2X")
+
+
+        self.invert = invert
+        self._gyro = navx.AHRS.create_spi()
+
+
+        self._gyro_sim = self._gyro.sim_state
+
+    def zero_heading(self):
+        self._gyro.reset()
+
+    @property
+    def heading(self) -> Rotation2d:
+        yaw = self._gyro.getYaw()
         if self.invert:
             yaw = 360 - yaw
         return Rotation2d.fromDegrees(yaw)
