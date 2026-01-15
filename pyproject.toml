@@ -23,5 +23,6 @@ requires = [
      "robotpy-navx==2026.0.0b1",
      "robotpy-pathplannerlib",
      "phoenix6",
-     "robotpy-rev"
+     "robotpy-rev",
+     "black"
 ]
