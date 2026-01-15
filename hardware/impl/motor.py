@@ -342,8 +342,8 @@ class NEOCoaxialDriveComponent(CoaxialDriveComponent):
 
         self._motor.configure(
             settings,
-            rev.ResetMode.kResetSafeParameters,
-            rev.PersistMode.kPersistParameters,
+            rev.SparkMax.ResetMode.kResetSafeParameters,
+            rev.SparkMax.PersistMode.kPersistParameters,
         )
 
     def follow_velocity_open(self, velocity: float):
@@ -440,8 +440,8 @@ class NEOCoaxialAzimuthComponent(CoaxialAzimuthComponent):
 
         self._motor.configure(
             settings,
-            rev.ResetMode.kResetSafeParameters,
-            rev.PersistMode.kPersistParameters,
+            rev.SparkMax.ResetMode.kResetSafeParameters,
+            rev.SparkMax.PersistMode.kPersistParameters,
         )
 
     def follow_angle(self, angle: Rotation2d):
