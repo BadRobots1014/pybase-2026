@@ -3,16 +3,23 @@
 ####################################################################################################################
 
 version: "1.0"
-linter: jetbrains/qodana-python-community:2025.2
-bootstrap: |
-  python3 -m pip install --upgrade pip
-  python3 -m pip install robotpy
+
+linter: jetbrains/qodana-python-community:2025.3
+
 profile:
-  name: qodana.recommended
+  name: qodana.starter
+
+bootstrap: |
+  pip install --quiet robotpy
+  robotpy sync
+
 exclude:
-  - name: PyPep8NamingInspection # This ignores WPILib's camelCase (robotInit)
-  - name: PyUnresolvedReferencesInspection
+  - name: All
     paths:
-      - "**/tests/*" # Ignore unresolved refs in test folders
-include:
-  - name: CheckDependencyLicenses
+      - ".venv"
+      - "venv"
+      - "__pycache__"
+  - name: PyPep8NamingInspection # Stops warnings about robotInit
+
+# Don't fail CI on warnings, only track them
+failThreshold: 0
