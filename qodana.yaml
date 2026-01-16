@@ -1,0 +1,25 @@
+####################################################################################################################
+# WARNING: Do not store sensitive information in this file, as its contents will be included in the Qodana report. #
+####################################################################################################################
+
+version: "1.0"
+
+linter: jetbrains/qodana-python-community:2025.3
+
+profile:
+  name: qodana.starter
+
+bootstrap: |
+  pip install --quiet robotpy
+  robotpy sync
+
+exclude:
+  - name: All
+    paths:
+      - ".venv"
+      - "venv"
+      - "__pycache__"
+  - name: PyPep8NamingInspection # Stops warnings about robotInit
+
+# Don't fail CI on warnings, only track them
+failThreshold: 0
