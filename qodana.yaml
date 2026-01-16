@@ -4,7 +4,15 @@
 
 version: "1.0"
 linter: jetbrains/qodana-python-community:2025.2
+bootstrap: |
+  python3 -m pip install --upgrade pip
+  python3 -m pip install robotpy
 profile:
   name: qodana.recommended
+exclude:
+  - name: PyPep8NamingInspection # This ignores WPILib's camelCase (robotInit)
+  - name: PyUnresolvedReferencesInspection
+    paths:
+      - "**/tests/*" # Ignore unresolved refs in test folders
 include:
   - name: CheckDependencyLicenses
