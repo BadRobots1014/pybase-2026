@@ -5,8 +5,8 @@ import navx
 import phoenix6.hardware
 import rev
 import wpilib
-from wpimath.geometry import Rotation2d
 from navx import Navx
+from wpimath.geometry import Rotation2d
 
 from ..abstract.sensor import AbsoluteEncoder, Gyro
 
@@ -86,6 +86,7 @@ class PigeonGyro(Gyro):
         return Rotation2d.fromDegrees(yaw)
 """
 
+
 class Pigeon2Gyro(Gyro):
     def __init__(self, id_: int | tuple[int, str], invert: bool = False):
         # Initialize parent with a descriptive name
@@ -118,17 +119,12 @@ class Pigeon2Gyro(Gyro):
 
 
 class NavX2Gyro(Gyro):
-
-    def __init__(self, id_: int | tuple[int, str], invert: bool = False):
+    def __init__(self, invert: bool = False):
         # Initialize parent with a descriptive name
         super().__init__("Nav2X")
 
-
         self.invert = invert
         self._gyro = navx.AHRS.create_spi()
-
-
-        self._gyro_sim = self._gyro.sim_state
 
     def zero_heading(self):
         self._gyro.reset()
