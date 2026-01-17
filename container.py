@@ -41,7 +41,7 @@ class RobotContainer:
                 ),
                 azimuth=components.azimuth_component_class(
                     id_=ELEC.LF_steer_CAN_ID,
-                    azimuth_offset=Rotation2d.fromDegrees(0),
+                    azimuth_offset=Rotation2d.fromDegrees(0.404053 * 360),
                     parameters=components.azimuth_params,
                     absolute_encoder=self.lf_enc,
                 ),
@@ -56,7 +56,7 @@ class RobotContainer:
                 ),
                 azimuth=components.azimuth_component_class(
                     id_=ELEC.RF_steer_CAN_ID,
-                    azimuth_offset=Rotation2d.fromDegrees(0),
+                    azimuth_offset=Rotation2d.fromDegrees(0.481201 * 360),
                     parameters=components.azimuth_params,
                     absolute_encoder=self.rf_enc,
                 ),
@@ -71,7 +71,7 @@ class RobotContainer:
                 ),
                 azimuth=components.azimuth_component_class(
                     id_=ELEC.LB_steer_CAN_ID,
-                    azimuth_offset=Rotation2d.fromDegrees(0),
+                    azimuth_offset=Rotation2d.fromDegrees(0.499268 * 360),
                     parameters=components.azimuth_params,
                     absolute_encoder=self.lb_enc,
                 ),
@@ -86,7 +86,7 @@ class RobotContainer:
                 ),
                 azimuth=components.azimuth_component_class(
                     id_=ELEC.RB_steer_CAN_ID,
-                    azimuth_offset=Rotation2d.fromDegrees(0),
+                    azimuth_offset=Rotation2d.fromDegrees(0.745605 * 360),
                     parameters=components.azimuth_params,
                     absolute_encoder=self.rb_enc,
                 ),
@@ -96,7 +96,7 @@ class RobotContainer:
         )
 
         # list of camera objects to get poses from
-        camera_list = [Limelight()]
+        camera_list = []
 
         # The primary controller
         self.stick = wpilib.Joystick(0)
