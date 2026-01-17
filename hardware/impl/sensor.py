@@ -188,8 +188,8 @@ class SparkMaxAbsoluteEncoder(AbsoluteEncoder):
         settings.absoluteEncoder.positionConversionFactor(360)
         controller.configure(
             settings,
-            rev.SparkMax.ResetMode.kNoResetSafeParameters,
-            rev.SparkMax.PersistMode.kPersistParameters,
+            rev.ResetMode.kNoResetSafeParameters,
+            rev.PersistMode.kPersistParameters,
         )
 
     @property
