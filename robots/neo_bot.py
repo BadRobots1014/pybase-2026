@@ -104,9 +104,9 @@ class NeoBot:
         # "steering_neutral": phoenix5.NeutralMode.Brake,
         # Values to pass to stick.getRawAxis()
         # Set these according to your operator preferences
-        "translation_joystick_axis": JOYSTICK_AXES["RIGHT_Y"],
-        "strafe_joystick_axis": JOYSTICK_AXES["RIGHT_X"],
-        "rotation_joystick_axis": JOYSTICK_AXES["LEFT_X"],
+        "translation_joystick_axis": JOYSTICK_AXES["LEFT_Y"],
+        "strafe_joystick_axis": JOYSTICK_AXES["LEFT_X"],
+        "rotation_joystick_axis": JOYSTICK_AXES["RIGHT_X"],
     }
     OP = namedtuple("Data", op_data.keys())(**op_data)
 
