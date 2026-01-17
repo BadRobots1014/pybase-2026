@@ -41,18 +41,7 @@ class PhysicsEngine(core.PhysicsEngine):
         self.tag_manager = create_apriltag_manager(self.swerve.field)
 
         # Initialize DummyCamera with proper parameters
-        self.swerve._camera_list = [
-            DummyCamera(
-                horizontal_fov=SIM.camera_horizontal_fov_deg,
-                horizontal_pixels=SIM.camera_horizontal_pixels,
-                frame_rate=SIM.camera_frame_rate,
-                latency=SIM.camera_latency_ms,
-                tag_manager=self.tag_manager,
-                is_rolling_shutter=SIM.camera_is_rolling_shutter,
-                enabled=True,
-                name="sim_camera",
-            )
-        ]
+        self.swerve._camera_list = []
 
         # Set initial robot position
         initial_pose = Pose2d(
