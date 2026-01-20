@@ -127,10 +127,8 @@ class SwerveModule:
         # driving.
         desiredState.cosineScale(encoderRotation)
 
-        # driveFeedforward = self.driveFeedforward.calculate(desiredState.speed)
-        # turnFeedforward = self.turnFeedforward.calculate(
-        #    self.turningPIDController.getSetpoint().velocity
-        # )
+        self.driveFeedforward = wpimath.controller.SimpleMotorFeedforwardMeters(1, 3)
+        self.turnFeedforward = wpimath.controller.SimpleMotorFeedforwardMeters(1, 0.5)
 
         # Calculate the drive output from the drive PID controller.
         driveOutput = self.drivePIDController.calculate(
