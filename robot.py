@@ -72,7 +72,7 @@ class Robot(wpilib.TimedRobot):
             -self.rotLimiter.calculate(
                 wpimath.applyDeadband(self.controller.getRightX(), 0.5)
             )
-            * self.maxAngularSpeed
+            * self.maxSpeed
         )
 
         self.swerve.drive(xSpeed, ySpeed, rot, fieldRelative, self.getPeriod())
