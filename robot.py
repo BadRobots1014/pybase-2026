@@ -76,3 +76,6 @@ class Robot(wpilib.TimedRobot):
         )
 
         self.swerve.drive(xSpeed, ySpeed, rot, fieldRelative, self.getPeriod())
+
+        if self.controller.getOptionsButtonPressed():
+            SwerveSubsystem.zeroYaw(self.swerve)
