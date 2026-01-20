@@ -20,6 +20,3 @@ exclude:
       - "venv"
       - "__pycache__"
   - name: PyPep8NamingInspection # Stops warnings about robotInit
-
-# Don't fail CI on warnings, only track them
-failThreshold: 0
