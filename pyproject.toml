@@ -25,5 +25,5 @@ components = [
 requires = [
     "phoenix6",
     "robotpy-rev",
-    "robotpy-navx==2026.0.0b1"
+    "robotpy-navx"
 ]
