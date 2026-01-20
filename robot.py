@@ -6,7 +6,6 @@
 #
 
 import math
-from dataclasses import dataclass
 
 import wpilib
 import wpilib.drive
@@ -21,13 +20,17 @@ class Robot(wpilib.TimedRobot):
     # MECH
     maxSpeed: float = 3.0  # 3 meters per second
     maxAngularSpeed: float = math.pi  # 1/2 rotation per second
-    moduleMaxAngularVelocity: float = math.pi
-    moduleMaxAngularAcceleration: float = math.tau
+    maxModuleAngularVelocity: float = math.pi
+    maxModuleAngularAcceleration: float = math.tau
 
     def robotInit(self) -> None:
         """Robot initialization function"""
         self.controller = wpilib.PS4Controller(0)
-        self.swerve = SwerveSubsystem()
+        self.swerve = SwerveSubsystem(
+            maxSpeed=self.maxAngularSpeed,
+            maxModuleAngularVelocity=self.maxModuleAngularVelocity,
+            maxModuleAngularAcceleration=self.maxModuleAngularAcceleration,
+        )
 
         # Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
         self.xspeedLimiter = wpimath.filter.SlewRateLimiter(3)
