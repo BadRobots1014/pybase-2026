@@ -11,7 +11,7 @@ profile:
 
 bootstrap: |
   pip install --quiet robotpy
-  robotpy sync
+  robotpy sync --no-upgrade-project
 
 exclude:
   - name: All
