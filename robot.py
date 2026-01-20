@@ -5,18 +5,29 @@
 # the WPILib BSD license file in the root directory of this project.
 #
 
+import math
+from dataclasses import dataclass
+
 import wpilib
 import wpilib.drive
 import wpimath
 import wpimath.controller
 import wpimath.filter
 
+from components.swerve.subsystem import SwerveSubsystem
 
-class MyRobot(wpilib.TimedRobot):
+
+class Robot(wpilib.TimedRobot):
+    # MECH
+    maxSpeed: float = 3.0  # 3 meters per second
+    maxAngularSpeed: float = math.pi  # 1/2 rotation per second
+    moduleMaxAngularVelocity: float = math.pi
+    moduleMaxAngularAcceleration: float = math.tau
+
     def robotInit(self) -> None:
         """Robot initialization function"""
         self.controller = wpilib.PS4Controller(0)
-        self.swerve = drivetrain.Drivetrain()
+        self.swerve = SwerveSubsystem()
 
         # Slew rate limiters to make joystick inputs more gentle; 1/3 sec from 0 to 1.
         self.xspeedLimiter = wpimath.filter.SlewRateLimiter(3)
@@ -37,7 +48,7 @@ class MyRobot(wpilib.TimedRobot):
             -self.xspeedLimiter.calculate(
                 wpimath.applyDeadband(self.controller.getLeftY(), 0.5)
             )
-            * drivetrain.kMaxSpeed
+            * self.maxSpeed
         )
 
         # Get the y speed or sideways/strafe speed. We are inverting this because
@@ -47,7 +58,7 @@ class MyRobot(wpilib.TimedRobot):
             -self.yspeedLimiter.calculate(
                 wpimath.applyDeadband(self.controller.getLeftX(), 0.5)
             )
-            * drivetrain.kMaxSpeed
+            * self.maxSpeed
         )
 
         # Get the rate of angular rotation. We are inverting this because we want a
@@ -58,7 +69,7 @@ class MyRobot(wpilib.TimedRobot):
             -self.rotLimiter.calculate(
                 wpimath.applyDeadband(self.controller.getRightX(), 0.5)
             )
-            * drivetrain.kMaxSpeed
+            * self.maxAngularSpeed
         )
 
         self.swerve.drive(xSpeed, ySpeed, rot, fieldRelative, self.getPeriod())
