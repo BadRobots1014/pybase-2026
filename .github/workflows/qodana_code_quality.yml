@@ -19,26 +19,10 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
-
-      - name: Cache Qodana data
-        uses: actions/cache@v3
-        with:
-          path: /tmp/qodana/caches
-          key: ${{ runner.os }}-qodana-${{ hashFiles('**/pyproject.toml') }}
-          # Restore-keys allow using an older cache if an exact match isn't found
-          restore-keys: |
-            ${{ runner.os }}-qodana-
-
-      - name: Create Qodana cache directory
-        run: mkdir -p /tmp/qodana/caches /tmp/qodana/results
-
       - name: "Qodana Scan"
         uses: JetBrains/qodana-action@v2025.3
         with:
           pr-mode: false
-          # Explicitly tell Qodana to use the cached directory
-          cache-dir: /tmp/qodana/caches
-          results-dir: /tmp/qodana/results
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_745889828 }}
           QODANA_ENDPOINT: "https://qodana.cloud"
