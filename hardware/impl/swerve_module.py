@@ -42,6 +42,9 @@ class SwerveModule:
         self.turningMotor = rev.SparkMax(
             turningMotorChannel, rev.SparkMax.MotorType.kBrushless
         )
+        # TODO: Make inverting a conditional passed at Init
+        self.turningMotor.setInverted(True)
+        self.driveMotor.setInverted(True)
 
         # Init Encoders
         self.driveEncoder = self.driveMotor.getEncoder()
@@ -124,20 +127,27 @@ class SwerveModule:
         # driving.
         desiredState.cosineScale(encoderRotation)
 
+        # driveFeedforward = self.driveFeedforward.calculate(desiredState.speed)
+        # turnFeedforward = self.turnFeedforward.calculate(
+        #    self.turningPIDController.getSetpoint().velocity
+        # )
+
         # Calculate the drive output from the drive PID controller.
         driveOutput = self.drivePIDController.calculate(
             self.driveEncoder.getVelocity(), desiredState.speed
         )
+        # driveOutput += driveFeedforward
 
         # Calculate the turning motor output from the turning PID controller.
         turnOutput = self.turningPIDController.calculate(
             self.turningEncoder.get_position().value,
             desiredState.angle.radians() / (math.pi * 2),  # rotations
         )
+        # turnOutput += turnFeedforward
 
         # manually clamp pid outputs to acceptable voltage
         driveOutput = max(min(driveOutput, 12), -12)
-        turnOutput = max(min(turnOutput, 4), -4)
+        turnOutput = max(min(turnOutput, 12), -12)
 
-        self.driveMotor.set(driveOutput)
-        self.turningMotor.set(turnOutput)
+        self.driveMotor.setVoltage(driveOutput)
+        self.turningMotor.setVoltage(turnOutput)
