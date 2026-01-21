@@ -126,3 +126,6 @@ class SwerveSubsystem:
                 self.backRight.getPosition(),
             ),
         )
+
+    def zeroYaw(self) -> None:
+        self.gyro.zeroYaw()
